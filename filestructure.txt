@@ -1,0 +1,19 @@
+app/  
+├── config/  
+│   └── settings.py          # All constants + env loading  
+├── models/  
+│   └── schemas.py            # All Pydantic models  
+├── prompts/  
+│   └── templates.py          # All LLM prompt templates  
+├── memory/  
+│   ├── pinecone_ltm.py       # PineconeLTMManager  
+│   ├── controller.py         # MemoryController  
+│   ├── dedup.py              # Hybrid dedup logic  
+│   ├── decay.py              # Decay + pruning  
+│   └── conflict.py           # Conflict resolution  
+├── graph/  
+│   ├── nodes.py              # All LangGraph node functions  
+│   └── builder.py            # Graph construction  
+├── chatbot.py                # MultiLayerChatbot  
+├── cli.py                    # CLI entry point  
+└── test_suite.py             # Tests
