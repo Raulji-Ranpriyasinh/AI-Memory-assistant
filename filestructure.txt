@@ -97,3 +97,267 @@ You can:
 stream results into generation
 
 👉 This is advanced but powerful.
+
+
+API changes
+
+see i want to make the fastapi rest endpoint and give to the frontend eam so where i had to do cahges
+
+
+Thinking process (5 tools used)
+The good news: your MultiLayerChatbot class is already a clean, framework-agnostic API surface. The CLI is just a thin wrapper. Adding FastAPI means creating a new thin HTTP wrapper around the same MultiLayerChatbot — no changes to the core memory logic.
+
+What to Create / Modify
+
+app/  
+├── api/                          # 🆕 NEW directory  
+│   ├── __init__.py  
+│   ├── main.py                   # FastAPI app, CORS, lifespan  
+│   ├── routes/  
+│   │   ├── __init__.py  
+│   │   ├── chat.py               # POST /chat  
+│   │   ├── memories.py           # GET/DELETE /memories, GET /search  
+│   │   └── system.py             # GET /health, GET /metrics, POST /prune  
+│   ├── schemas.py                # Request/Response Pydantic models  
+│   └── dependencies.py           # get_chatbot() dependency injection  
+├── chatbot.py                    # ⚠️ MINOR CHANGE: remove print() in prune_stale_memories  
+├── config/settings.py            # ⚠️ MINOR CHANGE: add CORS_ORIGINS, API_HOST, API_PORT  
+├── cli.py                        # NO CHANGE (still works for local dev)  
+└── ...                           # everything else unchanged  
+main.py                           # ⚠️ CHANGE: add --api flag to start FastAPI server  
+requirements.txt                  # ⚠️ ADD: fastapi, uvicorn
+Proposed REST Endpoints
+Method	Endpoint	Maps to	Purpose
+POST	/api/chat	chatbot.chat()	Send message, get response
+GET	/api/memories	chatbot.get_memories()	All LTM + summaries
+GET	/api/memories/search?q=...&top_k=10&category=...	chatbot.search_memories()	Semantic search
+GET	/api/history	chatbot.get_conversation_history()	STM-A window
+DELETE	/api/memories/{memory_id}	chatbot.delete_memory()	Delete one memory
+DELETE	/api/memories	chatbot.delete_all_memories()	Wipe all user memories
+POST	/api/prune	chatbot.prune_stale_memories()	Decay + prune
+GET	/api/metrics	chatbot.get_metrics()	Observability
+GET	/api/health	—	Health check for frontend/infra
+Key Design Decisions
+1. User identification — The frontend should send user_id via an X-User-ID header (or later, a JWT token). A FastAPI dependency extracts and validates it.
+
+2. Chatbot instance management — MultiLayerChatbot does Postgres schema setup in __init__, so we cache instances per user_id using a dict (or functools.lru_cache). This avoids re-running setup on every request.
+
+3. CORS — The frontend team will need CORS enabled. Add configurable CORS_ORIGINS to settings.
+
+4. No changes to core logic — All routes are thin wrappers around MultiLayerChatbot methods. The memory pipeline, LangGraph, Pinecone, etc. are untouched.
+
+5. One print() to remove — prune_stale_memories() has a print() that would leak into server logs instead of the response. Return the count only.
+
+Concrete File Contents
+app/api/schemas.py — Request/Response Models
+
+from pydantic import BaseModel, Field  
+from typing import Any, Dict, List, Optional  
+  
+  
+class ChatRequest(BaseModel):  
+    message: str = Field(..., min_length=1, max_length=10000)  
+  
+class ChatResponse(BaseModel):  
+    response: str  
+    user_id: str  
+  
+class MemoriesResponse(BaseModel):  
+    ltm: List[Dict[str, Any]]  
+    summaries: List[Dict[str, Any]]  
+  
+class SearchRequest(BaseModel):  
+    q: str  
+    top_k: int = 10  
+    category: Optional[str] = None  
+  
+class SearchResponse(BaseModel):  
+    query: str  
+    results: List[Dict[str, Any]]  
+  
+class HistoryMessage(BaseModel):  
+    role: str  
+    content: str  
+  
+class PruneResponse(BaseModel):  
+    pruned_count: int  
+  
+class HealthResponse(BaseModel):  
+    status: str  
+    version: str = "1.0.0"  
+  
+class ErrorResponse(BaseModel):  
+    detail: str
+app/api/dependencies.py — Chatbot DI
+
+from __future__ import annotations  
+from typing import Dict  
+from fastapi import Header, HTTPException  
+from app.chatbot import MultiLayerChatbot  
+from app.security.isolation import validate_user_id, SecurityError  
+  
+_chatbot_cache: Dict[str, MultiLayerChatbot] = {}  
+  
+def get_chatbot(x_user_id: str = Header(..., alias="X-User-ID")) -> MultiLayerChatbot:  
+    """  
+    FastAPI dependency: extract user_id from header, return cached chatbot.  
+    """  
+    try:  
+        user_id = validate_user_id(x_user_id)  
+    except SecurityError as e:  
+        raise HTTPException(status_code=400, detail=str(e))  
+  
+    if user_id not in _chatbot_cache:  
+        try:  
+            _chatbot_cache[user_id] = MultiLayerChatbot(user_id=user_id)  
+        except Exception as e:  
+            raise HTTPException(status_code=503, detail=f"Failed to init chatbot: {e}")  
+  
+    return _chatbot_cache[user_id]
+app/api/routes/chat.py
+
+from fastapi import APIRouter, Depends, HTTPException  
+from app.api.schemas import ChatRequest, ChatResponse  
+from app.api.dependencies import get_chatbot  
+from app.chatbot import MultiLayerChatbot  
+  
+router = APIRouter(prefix="/api", tags=["chat"])  
+  
+@router.post("/chat", response_model=ChatResponse)  
+def chat(req: ChatRequest, chatbot: MultiLayerChatbot = Depends(get_chatbot)):  
+    try:  
+        response = chatbot.chat(req.message)  
+        return ChatResponse(response=response, user_id=chatbot.user_id)  
+    except Exception as e:  
+        raise HTTPException(status_code=500, detail=str(e))
+app/api/routes/memories.py
+
+from fastapi import APIRouter, Depends, HTTPException, Query  
+from typing import Optional  
+from app.api.schemas import MemoriesResponse, SearchResponse, HistoryMessage  
+from app.api.dependencies import get_chatbot  
+from app.chatbot import MultiLayerChatbot  
+  
+router = APIRouter(prefix="/api", tags=["memories"])  
+  
+@router.get("/memories", response_model=MemoriesResponse)  
+def get_memories(chatbot: MultiLayerChatbot = Depends(get_chatbot)):  
+    return chatbot.get_memories()  
+  
+@router.get("/memories/search", response_model=SearchResponse)  
+def search_memories(  
+    q: str = Query(..., min_length=1),  
+    top_k: int = Query(10, ge=1, le=100),  
+    category: Optional[str] = None,  
+    chatbot: MultiLayerChatbot = Depends(get_chatbot),  
+):  
+    results = chatbot.search_memories(q, top_k=top_k, category=category)  
+    return SearchResponse(query=q, results=results)  
+  
+@router.get("/history", response_model=list[HistoryMessage])  
+def get_history(chatbot: MultiLayerChatbot = Depends(get_chatbot)):  
+    return chatbot.get_conversation_history()  
+  
+@router.delete("/memories/{memory_id}")  
+def delete_memory(memory_id: str, chatbot: MultiLayerChatbot = Depends(get_chatbot)):  
+    try:  
+        chatbot.delete_memory(memory_id)  
+        return {"status": "deleted", "memory_id": memory_id}  
+    except Exception as e:  
+        raise HTTPException(status_code=404, detail=str(e))  
+  
+@router.delete("/memories")  
+def delete_all_memories(chatbot: MultiLayerChatbot = Depends(get_chatbot)):  
+    chatbot.delete_all_memories()  
+    return {"status": "all_deleted", "user_id": chatbot.user_id}
+app/api/routes/system.py
+
+from fastapi import APIRouter, Depends  
+from app.api.schemas import PruneResponse, HealthResponse  
+from app.api.dependencies import get_chatbot  
+from app.chatbot import MultiLayerChatbot  
+  
+router = APIRouter(prefix="/api", tags=["system"])  
+  
+@router.get("/health", response_model=HealthResponse)  
+def health():  
+    return HealthResponse(status="ok")  
+  
+@router.post("/prune", response_model=PruneResponse)  
+def prune(chatbot: MultiLayerChatbot = Depends(get_chatbot)):  
+    count = chatbot.prune_stale_memories()  
+    return PruneResponse(pruned_count=count)  
+  
+@router.get("/metrics")  
+def metrics(chatbot: MultiLayerChatbot = Depends(get_chatbot)):  
+    return chatbot.get_metrics()
+app/api/main.py — FastAPI App
+
+from fastapi import FastAPI  
+from fastapi.middleware.cors import CORSMiddleware  
+from app.api.routes import chat, memories, system  
+from app.config.settings import CORS_ORIGINS  
+  
+app = FastAPI(  
+    title="AI Memory Assistant API",  
+    version="1.0.0",  
+    description="Multi-layer memory chatbot with STM-A/B/C + Pinecone LTM",  
+)  
+  
+app.add_middleware(  
+    CORSMiddleware,  
+    allow_origins=CORS_ORIGINS,  
+    allow_credentials=True,  
+    allow_methods=["*"],  
+    allow_headers=["*"],  
+)  
+  
+app.include_router(chat.router)  
+app.include_router(memories.router)  
+app.include_router(system.router)
+Changes to existing files
+app/config/settings.py — add at the bottom:
+
+
+# ── API ────────────────────────────────────────────────────────────────────────  
+API_HOST: str = os.getenv("API_HOST", "0.0.0.0")  
+API_PORT: int = int(os.getenv("API_PORT", "8000"))  
+CORS_ORIGINS: list[str] = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173").split(",")
+app/chatbot.py line 113 — remove the print():
+
+
+def prune_stale_memories(self) -> int:  
+    pruned = self.controller.ltm.decay_and_prune(self.user_id)  
+    return pruned  # Remove: print(f"  🗑️  Pruned {pruned} stale memories.")
+main.py — add API mode:
+
+
+import sys  
+  
+if __name__ == "__main__":  
+    if "--api" in sys.argv:  
+        import uvicorn  
+        from app.config.settings import API_HOST, API_PORT  
+        uvicorn.run("app.api.main:app", host=API_HOST, port=API_PORT, reload=True)  
+    else:  
+        from app.cli import main  
+        main()
+requirements.txt — add:
+
+
+fastapi>=0.110.0  
+uvicorn[standard]>=0.29.0
+How the Frontend Team Uses It
+
+# Start the API server  
+python main.py --api  
+  
+# Frontend calls:  
+curl -X POST http://localhost:8000/api/chat \  
+  -H "X-User-ID: alice" \  
+  -H "Content-Type: application/json" \  
+  -d '{"message": "I just moved to San Francisco"}'  
+  
+curl http://localhost:8000/api/memories -H "X-User-ID: alice"  
+curl "http://localhost:8000/api/memories/search?q=location" -H "X-User-ID: alice"  
+curl http://localhost:8000/api/health
