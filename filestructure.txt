@@ -35,3 +35,65 @@ docker compose down
 
 Stop AND delete all data
 docker compose down -v
+
+
+
+recommended changes
+
+1. Add Async + Parallel Execution
+
+Right now your pipeline is sequential.
+
+Upgrade:
+parallelize:
+embedding
+Pinecone queries
+candidate checks
+
+👉 This reduces latency significantly.
+
+2. Add Memory “Types” at Retrieval Level
+
+You store categories, but retrieval doesn’t yet use them strategically.
+
+Upgrade:
+
+Dynamic weighting:
+
+if query_type == "personal":
+    boost "identity", "preferences"
+elif query_type == "task":
+    boost "projects"
+
+👉 This improves personalization a lot.
+
+3. Add Session-Level Memory Cache
+
+You repeatedly hit Pinecone per turn.
+
+Add:
+in-memory cache per session
+short TTL (~1–5 min)
+
+👉 Reduces latency + cost.
+
+4. Add Evaluation Framework
+
+You have metrics—but not quality evaluation.
+
+Add:
+
+recall accuracy tests
+memory usefulness scoring
+regression tests
+5. Add Streaming / Partial Retrieval (Advanced)
+
+Instead of:
+
+retrieve → then respond
+
+You can:
+
+stream results into generation
+
+👉 This is advanced but powerful.
