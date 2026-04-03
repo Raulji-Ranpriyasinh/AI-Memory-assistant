@@ -17,3 +17,21 @@ app/
 ├── chatbot.py                # MultiLayerChatbot  
 ├── cli.py                    # CLI entry point  
 └── test_suite.py             # Tests
+
+
+Docker Command
+
+Start the container
+docker compose up -d
+
+Verify it's running
+docker compose ps
+
+Check logs (if something looks wrong)
+docker compose logs postgres
+
+Stop the container
+docker compose down
+
+Stop AND delete all data
+docker compose down -v
