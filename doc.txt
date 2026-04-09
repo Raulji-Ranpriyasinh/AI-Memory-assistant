@@ -1,0 +1,1181 @@
+Current State: Mostly Scaffolded, Not Implemented
+The repo has the correct directory structure in place matching the plan's 8-phase architecture, but almost every health/AI file is an empty stub — just a single comment line. The only fully implemented parts are the core memory chatbot (STM-A/B/C + Pinecone LTM pipeline) and a basic REST API (endpoints.py).
+
+What's Actually Working
+Component	Status	Key Files
+Multi-layer memory chatbot	Done	app/chatbot.py, app/graph/nodes.py, app/graph/builder.py
+LangGraph pipeline (STM-A → STM-B → STM-C → LTM Gate → Chat)	Done	app/graph/builder.py
+Pinecone LTM (store, search, dedup, decay, prune)	Done	app/memory/
+Basic REST endpoints (chat, memories, search, prune, metrics)	Done	endpoints.py
+Generic prompts (chat, extraction, scoring, conflict)	Done	app/prompts/templates.py
+What's Empty Stubs (1-line comment only)
+Every file below contains only a single comment — no actual code:
+
+File	Plan Phase	SOW Feature
+app/health/cgm_processor.py	Phase 3-4	CGM data normalization, spike/hypo detection
+app/health/correlation_engine.py	Phase 4	Cross-signal correlation (CGM × food × mood)
+app/health/food_recognition.py	Phase 6	Image-based food detection
+app/health/nudge_engine.py	Phase 5	Proactive nudge generation
+app/health/symptom_triage.py	Phase 7	Rule-based symptom assessment
+app/health/knowledge_directory.py	Phase 8	Knowledge base integration
+app/health/program_tracker.py	Phase 6	Program progress + task management
+app/models/health_schemas.py	Phase 3	CGM, mood, food, activity Pydantic models
+app/prompts/health_prompts.py	Phase 2-4	Health-aware prompts, CGM analysis
+app/security/auth.py	Phase 1	JWT + RBAC
+app/integrations/firebase_push.py	Phase 5	FCM push notifications
+app/integrations/speech.py	Phase 7	Speech-to-text
+app/integrations/nutrition_api.py	Phase 6	Nutritionix/Edamam API
+app/api/main.py (under app/api/)	Phase 1	FastAPI app with CORS, auth middleware
+app/api/dependencies.py (under app/api/)	Phase 1	JWT-based DI
+AI Scope from the SOW — Detailed Breakdown
+The SOW defines 3 major AI sub-systems plus a cross-cutting knowledge layer:
+
+A. AI-Powered Food Tracking
+Image recognition for meals
+Nutritional value estimation
+Portion size detection
+Glycemic load prediction
+Personalized food suggestions
+Plan mapping: Phase 6 — app/health/food_recognition.py wraps an external API (Gemini Vision or Google Cloud Vision + Nutritionix). The plan wisely recommends a wrapper pattern so the backend model can be swapped without changing the API contract. plan.txt:274-279
+
+B. Contextual Awareness Engine
+This is the core personalization engine. Inputs: user profile, CGM readings, mood/behavior logs, program activity, food intake, location/time patterns. Outputs: smart nudges, personalized alerts, behavioral recommendations, risk prediction.
+
+Plan mapping: Spread across Phases 3-5:
+
+Phase 3: Health data ingestion (app/api/routes/cgm.py, mood.py, food.py, activity.py) converting structured data into memory candidates fed through the existing STM-C → LTM pipeline
+Phase 4: app/health/correlation_engine.py — correlates CGM with food/mood/activity using a timeline approach + Gemini for insight generation
+Phase 5: app/health/nudge_engine.py — background task generating proactive nudges based on patterns plan.txt:148-196 plan.txt:216-234 plan.txt:236-261
+C. App Knowledge Directory (AI Training Layer)
+Structured healthcare content ingestion
+Media management
+Dataset preparation pipelines
+Feedback loop from user interactions
+Human-in-the-loop validation
+Plan mapping: Phase 8 — app/health/knowledge_directory.py uses a separate Pinecone namespace/index for admin-managed content. The chat node queries both personal LTM AND the knowledge directory, with personal memories weighted higher. plan.txt:305-329
+
+D. AI Virtual Assistant (SOW Section B.7 / A.7)
+Personalized health assistant chatbot
+Nutrition advice, medication reminders, program guidance
+Symptom triage support
+Voice and text-based interaction
+Plan mapping:
+
+Phase 2: Health domain adaptation of prompts (app/prompts/templates.py rewrite + app/prompts/health_prompts.py)
+Phase 7: Voice support (app/integrations/speech.py) + symptom triage (app/health/symptom_triage.py) plan.txt:106-146 plan.txt:287-304
+Gap Analysis: What the Plan is Missing or Too High-Level On
+The plan.txt is detailed for Phases 1-5 but gets progressively thinner. Here are the specific gaps when compared to the SOW's AI requirements:
+
+1. No Multilingual Support (English + Hebrew)
+The SOW explicitly requires both English and Hebrew. The plan has zero mention of i18n for prompts, LLM responses, or memory storage. This affects every AI component — prompts, nudge text, food recognition labels, symptom triage rules.
+
+2. Glycemic Load Prediction is Underspecified
+The SOW lists "Glycemic load prediction" as a distinct AI capability. The plan mentions glycemic_load as an optional field in FoodLog but doesn't describe how it's actually predicted. Is it from the nutrition API? From the LLM? From a custom model?
+
+3. Portion Size Detection is Missing
+The SOW lists "Portion size detection" under AI-Powered Food Tracking. The plan's food recognition wrapper doesn't address this at all.
+
+4. Risk Prediction is Vague
+The SOW's Contextual Awareness Engine outputs include "Risk prediction." The plan's nudge engine covers alerts and pattern insights but doesn't describe a risk scoring model or how risk levels are calculated.
+
+5. Dataset Preparation Pipelines / Model Improvement Workflows
+The SOW's Knowledge Directory includes "Dataset preparation pipelines", "Feedback loop from user interactions", "Model improvement workflows", and "Human-in-the-loop validation system." The plan's Phase 8 only covers content retrieval — none of the ML ops / training pipeline aspects.
+
+6. Location/Time-Based Patterns
+The SOW lists "Location/time-based patterns" as an input to the Contextual Awareness Engine. The plan doesn't include any location data ingestion or time-pattern analysis beyond CGM timestamps.
+
+7. No Physician-Shareable Report Generation
+The SOW mentions "Physician shareable reports" under CGM Insights. The plan doesn't address report generation or export.
+
+8. Emergency Health Alerts
+The SOW lists "Emergency health alerts" under Notification Services. The plan's nudge engine has glucose_alert but doesn't define an emergency escalation path.
+
+9. app/api/ Duplication Issue
+There are two API layers: the working endpoints.py (root level) used by main.py, and the empty app/api/ directory structure from the plan. The plan's Phase 1 describes migrating to app/api/ with JWT auth, but this hasn't been done — the old endpoints.py with X-User-ID query params is what's actually running. main.py:14-25 main.py:1
+
+10. LangGraph Pipeline Not Extended
+The plan describes adding a health_correlation node between ltm_gate and chat (Phase 4), but the current graph is still the original 5-node linear pipeline with no conditional edges. builder.py:22-34
+
+Recommended Implementation Priority (AI-Only)
+Based on the SOW's core differentiator being CGM intelligence + personalization, here's the order that delivers the most SOW value:
+
+
+
+
+
+
+
+
+
+
+
+
+Phases 1-2 are prerequisites. Phases 3-4 deliver the SOW's core differentiator (CGM intelligence). Phases 5-8 can be partially parallelized.
+
+Summary
+The plan.txt provides a solid 8-phase roadmap that correctly preserves the existing memory engine and adds health features additively. However, the actual implementation is at 0% for all AI/health features — every file in app/health/, app/integrations/, app/security/auth.py, app/models/health_schemas.py, app/prompts/health_prompts.py, and the app/api/ sub-package contains only a placeholder comment. The plan also has gaps around multilingual support, portion size detection, ML ops pipelines, location-based patterns, and physician report generation that need to be addressed before it fully covers the SOW's AI scope.
+
+
+
+
+
+
+see so read the complete plantxt and give me whole file waht should be do here and waht functionality each file should contain
+
+
+Thinking process (29 tools used)
+Here is the complete file-by-file breakdown of the entire plan.txt — what every file should do, what it currently contains, and the exact functionality to implement.
+
+Legend
+Status	Meaning
+DONE	Fully implemented, working code
+STUB	File exists but contains only a 1-line comment
+MODIFY	Existing working code that needs changes
+CREATE	File exists as stub or needs to be created from scratch
+PHASE 1: FastAPI REST Layer + Auth
+app/api/main.py — CREATE (currently stub) main.py:1
+What it should do: Initialize the FastAPI app with CORS middleware, lifespan events for startup logging, and include all route routers.
+
+
+# Functionality:  
+# - Create FastAPI app instance with title, version, description  
+# - Add CORSMiddleware with configurable CORS_ORIGINS from settings  
+# - Include all routers: chat, memories, system, cgm, mood, food, activity, nudges, programs  
+# - Add lifespan event for startup logging  
+# - Add global exception handler for SecurityError → 403
+app/api/dependencies.py — CREATE (currently stub) dependencies.py:1
+What it should do: Provide FastAPI dependency injection functions.
+
+
+# Functionality:  
+# - get_chatbot(user_id) → cached MultiLayerChatbot instance per user_id  
+#   Uses a dict cache to avoid re-running Postgres schema setup on every request  
+# - get_current_user() → extracts user_id and role from JWT Bearer token  
+#   Decodes JWT using app.security.auth.decode_jwt()  
+#   Returns a CurrentUser(user_id, role) object  
+#   Raises HTTPException(401) if token is invalid/expired
+app/api/middleware/auth.py — CREATE (currently stub)
+What it should do: JWT Bearer token validation middleware.
+
+
+# Functionality:  
+# - Intercept all requests to /api/v1/* (except /api/v1/health)  
+# - Extract Authorization: Bearer <token> header  
+# - Decode JWT using python-jose, extract user_id and role claims  
+# - Attach user_id and role to request.state  
+# - Return 401 if token missing, expired, or invalid signature  
+# - Skip auth for health check endpoint
+app/api/middleware/rate_limit.py — CREATE (currently stub)
+What it should do: Simple in-memory per-user rate limiter.
+
+
+# Functionality:  
+# - Track request counts per user_id in a dict with timestamps  
+# - Default limit: 60 requests/minute per user  
+# - Return 429 Too Many Requests if limit exceeded  
+# - Clean up expired entries periodically  
+# - Configurable via RATE_LIMIT_PER_MINUTE in settings
+app/api/schemas/chat.py — CREATE (currently stub)
+What it should do: Chat request/response Pydantic models.
+
+
+# Models:  
+# - ChatRequest(message: str, context: Optional[dict])  # context for health data hints  
+# - ChatResponse(response: str, user_id: str)  
+# - VoiceChatRequest(audio_base64: str, format: str)  # Phase 7  
+# - VoiceChatResponse(response: str, user_id: str, transcription: str)
+app/api/schemas/health.py — CREATE (currently stub)
+What it should do: API request/response models for all health data endpoints.
+
+
+# Models:  
+# - CGMBatchRequest(readings: List[CGMReading])  
+# - CGMSummaryResponse(avg_glucose: float, time_in_range: float, spike_count: int, hypo_count: int, ...)  
+# - MoodEntryRequest(emotion: str, stress_level: int, sleep_hours: Optional[float], notes: Optional[str])  
+# - MoodEntryResponse(id: str, status: str, correlation_hint: Optional[str])  
+# - FoodLogRequest(meal_type: str, items: List[str], photo_url: Optional[str], ...)  
+# - FoodRecognizeRequest(image_base64: str)  
+# - FoodRecognizeResponse(items: List[str], estimated_calories: int, glycemic_load: str)  
+# - ActivityLogRequest(activity_type: str, duration_minutes: int, intensity: str)
+app/api/schemas/memories.py — CREATE (currently stub)
+What it should do: Memory CRUD schemas.
+
+
+# Models:  
+# - MemoriesResponse(ltm: List[Dict], summaries: List[Dict])  
+# - SearchResponse(query: str, results: List[Dict], count: int)  
+# - HistoryMessage(role: str, content: str)  
+# - DeleteResponse(status: str, memory_id: str)
+app/api/schemas/programs.py — CREATE (currently stub)
+What it should do: Program guidance schemas.
+
+
+# Models:  
+# - ProgramListResponse(programs: List[ProgramSummary])  
+# - ProgramSummary(id: str, name: str, progress_pct: float, current_day: int, total_days: int)  
+# - ProgramProgressRequest(task_id: str, completed: bool, notes: Optional[str])  
+# - ProgramProgressResponse(status: str, updated_progress: float)
+app/api/schemas/system.py — CREATE (currently stub)
+What it should do: System/health/metrics schemas.
+
+
+# Models:  
+# - HealthResponse(status: str, version: str)  
+# - PruneResponse(pruned_count: int, message: str)  
+# - MetricsResponse(counts: Dict, sums: Dict)  
+# - ErrorResponse(detail: str)
+app/api/routes/chat.py — CREATE (currently stub)
+What it should do: Chat endpoints.
+
+
+# Endpoints:  
+# - POST /api/v1/chat → accepts ChatRequest, calls chatbot.chat(), returns ChatResponse  
+# - POST /api/v1/chat/voice → accepts VoiceChatRequest, runs speech-to-text, then chatbot.chat() (Phase 7)  
+# Both use Depends(get_current_user) for auth and Depends(get_chatbot) for chatbot instance
+app/api/routes/memories.py — CREATE (currently stub)
+What it should do: Memory CRUD endpoints.
+
+
+# Endpoints:  
+# - GET    /api/v1/memories              → chatbot.get_memories()  
+# - GET    /api/v1/memories/search?q=... → chatbot.search_memories()  
+# - GET    /api/v1/history               → chatbot.get_conversation_history()  
+# - DELETE /api/v1/memories/{id}         → chatbot.delete_memory()  
+# - DELETE /api/v1/memories              → chatbot.delete_all_memories()
+app/api/routes/system.py — CREATE (currently stub)
+What it should do: System endpoints.
+
+
+# Endpoints:  
+# - GET  /api/v1/health  → returns {status: "ok", version: "1.0.0"} (no auth required)  
+# - POST /api/v1/prune   → chatbot.prune_stale_memories()  
+# - GET  /api/v1/metrics  → chatbot.get_metrics()
+app/security/auth.py — CREATE (currently stub) auth.py:1
+What it should do: JWT decoding and RBAC role management.
+
+
+# Functionality:  
+# - Role enum: patient, physician, admin  
+# - decode_jwt(token: str) → dict with user_id, role, exp claims  
+#   Uses python-jose with JWT_SECRET and JWT_ALGORITHM from settings  
+#   Raises AuthError if expired or invalid  
+# - require_role(*roles) → FastAPI dependency decorator  
+#   Checks if current user's role is in allowed roles  
+#   Raises HTTPException(403) if not authorized  
+# - CurrentUser model: user_id: str, role: str
+app/config/settings.py — MODIFY (add new constants) settings.py:1-61
+What to add at the bottom:
+
+
+# New constants to add:  
+# ── API ──  
+# API_HOST: str = os.getenv("API_HOST", "0.0.0.0")  
+# API_PORT: int = int(os.getenv("API_PORT", "8000"))  
+# CORS_ORIGINS: list[str] = os.getenv("CORS_ORIGINS", "http://localhost:3000,...").split(",")  
+# JWT_SECRET: str = os.getenv("JWT_SECRET", "change-me-in-production")  
+# JWT_ALGORITHM: str = "HS256"  
+# RATE_LIMIT_PER_MINUTE: int = 60  
+  
+# ── Health categories ──  
+# VALID_CATEGORIES: list[str] = [  
+#     "identity", "health_condition", "medication", "dietary",  
+#     "cgm_pattern", "mood_pattern", "activity", "program", "preferences"  
+# ]  
+  
+# ── Feature flags ──  
+# ENABLE_CGM: bool = os.getenv("ENABLE_CGM", "true").lower() == "true"  
+# ENABLE_NUDGES: bool = os.getenv("ENABLE_NUDGES", "true").lower() == "true"  
+# ENABLE_FOOD_RECOGNITION: bool = os.getenv("ENABLE_FOOD_RECOGNITION", "true").lower() == "true"  
+# ENABLE_VOICE: bool = os.getenv("ENABLE_VOICE", "false").lower() == "true"  
+  
+# ── CGM thresholds ──  
+# CGM_NORMAL_LOW: float = 70.0  
+# CGM_NORMAL_HIGH: float = 140.0  
+# CGM_SPIKE_THRESHOLD: float = 180.0  
+# CGM_HYPO_THRESHOLD: float = 70.0  
+  
+# ── Nudge settings ──  
+# NUDGE_CHECK_INTERVAL_MINUTES: int = 30  
+# MEAL_REMINDER_HOURS: int = 5  
+  
+# ── External API keys ──  
+# FIREBASE_CREDENTIALS_PATH: str = os.getenv("FIREBASE_CREDENTIALS_PATH", "")  
+# NUTRITIONIX_APP_ID: str = os.getenv("NUTRITIONIX_APP_ID", "")  
+# NUTRITIONIX_API_KEY: str = os.getenv("NUTRITIONIX_API_KEY", "")  
+# GOOGLE_SPEECH_API_KEY: str = os.getenv("GOOGLE_SPEECH_API_KEY", "")
+app/chatbot.py — MODIFY (minor) chatbot.py:110-114
+What to change:
+
+Line 113: Remove print(f" 🗑️ Pruned {pruned} stale memories.") — just return the count
+Add a method inject_health_memory(user_id, candidate: MemoryCandidate) that injects a health data memory candidate into the STM-C buffer via PostgresStore (used by health data endpoints in Phase 3)
+main.py — MODIFY main.py:14-25
+What to change:
+
+Add --api flag: if "--api" in sys.argv, run uvicorn with app.api.main:app
+Keep existing --cli mode
+Default to API mode when run via uvicorn main:app
+endpoints.py — DEPRECATE endpoints.py:1-64
+What to do: This is the old API layer using X-User-ID query params with no auth. Once app/api/ is implemented, this file should be deprecated and eventually removed. Keep it temporarily for backward compatibility.
+
+PHASE 2: Health Domain Adaptation
+app/prompts/templates.py — MODIFY templates.py:5-51
+What to change:
+
+Rewrite CHAT_SYSTEM_PROMPT — Replace the generic assistant prompt with a health-domain prompt:
+
+# New CHAT_SYSTEM_PROMPT should include:  
+# - Health assistant identity: "You are Delight, a personalized digital health assistant"  
+# - Medical disclaimer: "You are not a doctor. Always recommend consulting a physician for medical decisions."  
+# - CGM interpretation guidelines:  
+#   Normal range: 70-140 mg/dL  
+#   Spike: >180 mg/dL  
+#   Hypoglycemia: <70 mg/dL  
+#   Time-in-range target: >70%  
+# - Nutrition advice framework (glycemic index awareness, meal timing relative to glucose)  
+# - Medication reminder awareness (reference stored medication memories)  
+# - Symptom triage rules: when to escalate to physician (chest pain, severe hypo <54, persistent highs >300)  
+# - Program guidance context (reference enrolled programs, milestones)  
+# - Mood-glucose correlation awareness  
+# - Still include {user_context}, {conversation_summaries}, {ltm_content} placeholders
+Rewrite CANDIDATE_EXTRACTION_PROMPT — Replace generic categories with health categories:
+
+# New categories:  
+# - identity: Name, age, gender, location, profession  
+# - health_condition: Diabetes type, allergies, chronic conditions, diagnoses  
+# - medication: Current meds, dosages, schedules, side effects  
+# - dietary: Restrictions, preferences, intolerances, goals  
+# - cgm_pattern: Recurring glucose patterns, known triggers, time-in-range  
+# - mood_pattern: Emotional baselines, stress triggers, sleep quality  
+# - activity: Exercise habits, daily routines, energy patterns  
+# - program: Enrolled programs, milestones, goals, progress  
+# - preferences: Communication style, notification preferences, language
+SCORING_PROMPT — Update salience guidelines to include health-specific scoring:
+
+# High salience (0.8-1.0): Health conditions, medication changes, recurring CGM patterns, critical symptoms  
+# Medium salience (0.5-0.7): Dietary preferences, exercise habits, mood patterns  
+# Low salience (0.0-0.4): One-off readings, ephemeral mood, already covered
+app/prompts/health_prompts.py — CREATE (currently stub) health_prompts.py:1
+What it should contain: All health-specific LLM prompt templates.
+
+
+# Prompt templates to create:  
+  
+# 1. CGM_ANALYSIS_PROMPT  
+#    Input: CGM readings batch, recent food/mood/activity memories  
+#    Task: Analyze glucose patterns, detect spikes/hypos, identify trends  
+#    Output: Structured analysis with severity, likely causes, recommendations  
+  
+# 2. CORRELATION_PROMPT  
+#    Input: Timeline of events (food at 12:30, glucose spike at 13:15, mood at 14:00)  
+#    Task: Identify causal correlations between behaviors and glucose responses  
+#    Output: Correlation insight text + confidence level  
+  
+# 3. SYMPTOM_TRIAGE_PROMPT  
+#    Input: User-reported symptoms, current CGM data, medication history  
+#    Task: Assess severity, provide guidance, determine if physician escalation needed  
+#    Output: Severity level (low/medium/high/critical), guidance text, escalate boolean  
+  
+# 4. NUTRITION_ADVICE_PROMPT  
+#    Input: Food log, CGM response to meal, dietary memories, health conditions  
+#    Task: Provide personalized nutrition guidance  
+#    Output: Advice text with glycemic impact explanation  
+  
+# 5. NUDGE_GENERATION_PROMPT  
+#    Input: User state (last meal time, last mood check, CGM trend, program progress)  
+#    Task: Generate a contextually appropriate nudge message  
+#    Output: Nudge text, nudge type, priority level  
+  
+# 6. PROGRAM_GUIDANCE_PROMPT  
+#    Input: Program details, current progress, recent health data  
+#    Task: Provide personalized program guidance for the day  
+#    Output: Guidance text, today's tasks, motivational message
+app/models/schemas.py — MODIFY (minor) schemas.py:15-21
+What to change:
+
+The MemoryCandidate.category field is already free-text str, so no schema change needed
+Just update the description field to reflect health categories: Field(description="identity | health_condition | medication | dietary | cgm_pattern | mood_pattern | activity | program | preferences")
+PHASE 3: Health Data Ingestion Endpoints
+app/models/health_schemas.py — CREATE (currently stub) health_schemas.py:1
+What it should contain: Core Pydantic models for all health data types.
+
+
+# Models to create:  
+  
+# class CGMReading(BaseModel):  
+#     glucose_mg_dl: float          # The glucose value  
+#     timestamp: str                # ISO format timestamp  
+#     trend: Optional[str]          # "rising", "falling", "stable"  
+#     device_id: Optional[str]      # CGM device identifier  
+  
+# class CGMBatch(BaseModel):  
+#     readings: List[CGMReading]    # Batch of readings from device sync  
+  
+# class MoodEntry(BaseModel):  
+#     emotion: str                  # "happy", "stressed", "anxious", "calm", etc.  
+#     stress_level: int             # 1-10 scale  
+#     sleep_hours: Optional[float]  # Hours slept last night  
+#     notes: Optional[str]          # Free-text notes  
+#     timestamp: str  
+  
+# class FoodLog(BaseModel):  
+#     meal_type: str                # "breakfast", "lunch", "dinner", "snack"  
+#     items: List[str]              # Food items consumed  
+#     photo_url: Optional[str]      # URL to food photo (from mobile upload)  
+#     estimated_calories: Optional[int]  
+#     glycemic_load: Optional[str]  # "low", "medium", "high"  
+#     timestamp: str  
+  
+# class ActivityLog(BaseModel):  
+#     activity_type: str            # "walking", "running", "yoga", etc.  
+#     duration_minutes: int  
+#     intensity: str                # "low", "medium", "high"  
+#     timestamp: str  
+  
+# class CGMSummary(BaseModel):  
+#     avg_glucose: float  
+#     min_glucose: float  
+#     max_glucose: float  
+#     time_in_range_pct: float      # % of readings between 70-140  
+#     spike_count: int              # readings > 180  
+#     hypo_count: int               # readings < 70  
+#     period_start: str  
+#     period_end: str  
+  
+# class NudgeRecord(BaseModel):  
+#     nudge_type: str               # "glucose_alert", "meal_reminder", etc.  
+#     message: str  
+#     priority: str                 # "low", "medium", "high", "critical"  
+#     timestamp: str  
+#     delivered: bool = False  
+#     acknowledged: bool = False
+app/health/cgm_processor.py — CREATE (currently stub) cgm_processor.py:1
+What it should contain: CGM data normalization and pattern detection logic.
+
+
+# class CGMProcessor:  
+#  
+# Methods:  
+#  
+# 1. normalize_readings(readings: List[CGMReading]) -> List[CGMReading]  
+#    - Validate glucose values (reject negatives, unrealistic values >500)  
+#    - Sort by timestamp  
+#    - Fill gaps if readings are missing (interpolation)  
+#    - Normalize device-specific quirks  
+#  
+# 2. detect_spikes(readings: List[CGMReading]) -> List[dict]  
+#    - Find readings > CGM_SPIKE_THRESHOLD (180 mg/dL)  
+#    - Group consecutive spike readings into spike events  
+#    - Return: [{start_time, end_time, peak_value, duration_minutes}]  
+#  
+# 3. detect_hypos(readings: List[CGMReading]) -> List[dict]  
+#    - Find readings < CGM_HYPO_THRESHOLD (70 mg/dL)  
+#    - Group into hypo events  
+#    - Return: [{start_time, end_time, lowest_value, duration_minutes}]  
+#  
+# 4. compute_summary(readings: List[CGMReading]) -> CGMSummary  
+#    - Calculate: avg, min, max, std_dev  
+#    - Time-in-range percentage (70-140 mg/dL)  
+#    - Spike count, hypo count  
+#    - Period start/end timestamps  
+#  
+# 5. detect_trends(readings: List[CGMReading]) -> str  
+#    - Analyze last N readings to determine: "rising", "falling", "stable"  
+#    - Use simple linear regression or moving average  
+#  
+# 6. cgm_to_memory_candidate(readings: List[CGMReading]) -> MemoryCandidate  
+#    - Convert a CGM batch into a MemoryCandidate object  
+#    - Text: "CGM session: avg {avg} mg/dL, {spike_count} spikes, {hypo_count} hypos"  
+#    - Category: "cgm_pattern"  
+#    - Context: time range, notable events  
+#    - This candidate gets injected into the STM-C → LTM pipeline
+app/api/routes/cgm.py — CREATE (currently stub)
+What it should contain: CGM data ingestion endpoints.
+
+
+# Endpoints:  
+#  
+# 1. POST /api/v1/cgm/readings  
+#    - Accepts: CGMBatchRequest (list of CGMReading)  
+#    - Process: normalize → detect patterns → create MemoryCandidate → inject into STM-C buffer  
+#    - Also triggers correlation engine if enabled  
+#    - Also triggers nudge engine for immediate glucose alerts (>180 or <70)  
+#    - Returns: {status, summary: CGMSummary, alerts: List[str]}  
+#  
+# 2. GET /api/v1/cgm/summary?period=24h|7d|30d  
+#    - Queries LTM for cgm_pattern memories within the period  
+#    - Returns: CGMSummaryResponse with aggregated stats
+app/api/routes/mood.py — CREATE (currently stub)
+What it should contain: Mood tracking endpoint.
+
+
+# Endpoints:  
+#  
+# 1. POST /api/v1/mood  
+#    - Accepts: MoodEntryRequest(emotion, stress_level, sleep_hours, notes)  
+#    - Process: Create MemoryCandidate with category="mood_pattern"  
+#      Text: "Mood: {emotion}, stress level {stress_level}/10, slept {sleep_hours}h"  
+#    - Inject into STM-C buffer via chatbot.inject_health_memory()  
+#    - Returns: MoodEntryResponse with optional correlation hint  
+#      (e.g., "Your glucose was elevated when you last reported stress")
+app/api/routes/food.py — CREATE (currently stub)
+What it should contain: Food logging and recognition endpoints.
+
+
+# Endpoints:  
+#  
+# 1. POST /api/v1/food/log  
+#    - Accepts: FoodLogRequest(meal_type, items, photo_url, estimated_calories, glycemic_load)  
+#    - Process: Create MemoryCandidate with category="dietary"  
+#      Text: "{meal_type}: {items joined}. Estimated {calories} cal, glycemic load: {gl}"  
+#    - Inject into STM-C buffer  
+#    - Returns: {status, id}  
+#  
+# 2. POST /api/v1/food/recognize (Phase 6)  
+#    - Accepts: FoodRecognizeRequest(image_base64)  
+#    - Process: Call food_recognition.py wrapper → get food items + nutrition  
+#    - Returns: FoodRecognizeResponse(items, estimated_calories, glycemic_load)
+app/api/routes/activity.py — CREATE (currently stub)
+What it should contain: Activity logging endpoint.
+
+
+# Endpoints:  
+#  
+# 1. POST /api/v1/activity  
+#    - Accepts: ActivityLogRequest(activity_type, duration_minutes, intensity)  
+#    - Process: Create MemoryCandidate with category="activity"  
+#      Text: "{activity_type} for {duration} min ({intensity} intensity)"  
+#    - Inject into STM-C buffer  
+#    - Returns: {status, id}
+PHASE 4: CGM Correlation Engine
+app/health/correlation_engine.py — CREATE (currently stub) correlation_engine.py:1
+What it should contain: Cross-signal correlation logic (the core intelligence).
+
+
+# class CorrelationEngine:  
+#     def __init__(self, controller: MemoryController):  
+#         self.controller = controller  
+#         self.llm = controller.chat_llm  # Use the better model for insights  
+#  
+# Methods:  
+#  
+# 1. correlate(user_id: str, trigger_event: str, lookback_hours: int = 4) -> Optional[str]  
+#    - Query LTM for recent memories (last 4 hours) across categories:  
+#      cgm_pattern, dietary, mood_pattern, activity  
+#    - Build a chronological timeline:  
+#      [food log at 12:30] → [glucose spike at 13:15] → [mood: stressed at 14:00]  
+#    - Send timeline to Gemini with CORRELATION_PROMPT  
+#    - Get insight: "Glucose spiked to 195 mg/dL ~45 min after eating white rice.  
+#      This pattern has occurred 3 times this week."  
+#    - Store insight as a new MemoryCandidate(category="cgm_pattern", salience=high)  
+#    - Return the insight text  
+#  
+# 2. build_timeline(user_id: str, hours: int) -> List[dict]  
+#    - Fetch all health memories from last N hours  
+#    - Sort chronologically  
+#    - Return: [{timestamp, category, text}]  
+#  
+# 3. detect_recurring_patterns(user_id: str) -> List[str]  
+#    - Query LTM for all cgm_pattern memories  
+#    - Use LLM to identify recurring patterns across multiple days  
+#    - Return list of pattern descriptions  
+#  
+# 4. get_food_glucose_correlation(user_id: str, food_item: str) -> Optional[str]  
+#    - Search LTM for past instances where this food was logged  
+#    - Find corresponding CGM data after those meals  
+#    - Return correlation insight or None
+app/prompts/health_prompts.py — CREATE (extends Phase 2 work)
+Already described in Phase 2 above. The CORRELATION_PROMPT and CGM_ANALYSIS_PROMPT are specifically needed for this phase.
+
+app/graph/builder.py — MODIFY builder.py:13-35
+What to change: Add a health_correlation node between ltm_gate and chat, using conditional edges.
+
+
+# Change the linear pipeline:  
+#   START → stm_a → stm_b → stm_c → ltm_gate → chat → END  
+#  
+# To conditional pipeline:  
+#   START → stm_a → stm_b → stm_c → ltm_gate → [conditional] → chat → END  
+#                                                  ↓  
+#                                          health_correlation  
+#                                                  ↓  
+#                                                chat  
+#  
+# Implementation:  
+# builder.add_node("health_correlation", nodes["health_correlation"])  
+# builder.add_conditional_edges(  
+#     "ltm_gate",  
+#     lambda state: "health_correlation" if has_health_data(state) else "chat",  
+# )  
+# builder.add_edge("health_correlation", "chat")  
+#  
+# has_health_data() checks if recent messages contain health-related content  
+# (CGM readings, food logs, mood entries, etc.)
+app/graph/nodes.py — MODIFY nodes.py:31-35
+What to add: A new health_correlation_node in the make_nodes() factory.
+
+
+# Add to make_nodes() return dict:  
+#  
+# def health_correlation_node(state, config, *, store):  
+#     """Run correlation engine when health data is present in recent context."""  
+#     cfg = config["configurable"]  
+#     user_id = cfg["user_id"]  
+#       
+#     # Check if recent messages contain health data  
+#     latest_msg = state["messages"][-1].content if state["messages"] else ""  
+#     if not _contains_health_data(latest_msg):  
+#         return {}  # No-op for regular chat  
+#       
+#     # Run correlation engine  
+#     engine = CorrelationEngine(controller)  
+#     insight = engine.correlate(user_id, trigger_event=latest_msg)  
+#       
+#     # If insight generated, append as system context for chat node  
+#     if insight:  
+#         # Store insight in state for chat node to reference  
+#         return {}  # State modification TBD based on LangGraph patterns  
+#     return {}
+
+PHASE 5: Smart Nudge Engine + Notifications
+app/health/nudge_engine.py — CREATE nudge_engine.py:1
+Runs as a background task, NOT inside the LangGraph pipeline. Triggered by: (a) periodic scheduler every 30 min, (b) real-time CGM ingestion for immediate alerts, (c) Node.js backend calling POST /api/nudges/check. plan.txt:236-261
+
+
+# class NudgeEngine:  
+#     def __init__(self, controller: MemoryController)  
+#  
+# 1. check_and_generate(user_id) -> List[NudgeRecord]  
+#    Main entry. Runs all checks below, returns generated nudges.  
+#  
+# 2. check_glucose_alert(user_id, reading: CGMReading) -> Optional[NudgeRecord]  
+#    Trigger: glucose > 180 or < 70  
+#    "Your glucose is 192 mg/dL and rising. Consider a 15-min walk."  
+#    Priority: "critical" for <54 or >300, "high" for <70 or >180  
+#  
+# 3. check_meal_reminder(user_id) -> Optional[NudgeRecord]  
+#    Trigger: No food log in 5+ hours (query LTM for last dietary memory)  
+#    "It's been a while since your last meal."  
+#    Priority: "low"  
+#  
+# 4. check_medication_reminder(user_id) -> Optional[NudgeRecord]  
+#    Trigger: Scheduled time from medication memory in LTM  
+#    "Time for your metformin (500mg)."  
+#    Priority: "medium"  
+#  
+# 5. check_pattern_insight(user_id) -> Optional[NudgeRecord]  
+#    Trigger: Correlation engine detects recurring pattern  
+#    "You tend to spike after lunch on weekdays. Try adding protein."  
+#    Uses NUDGE_GENERATION_PROMPT from health_prompts.py  
+#    Priority: "medium"  
+#  
+# 6. check_program_task(user_id) -> Optional[NudgeRecord]  
+#    Trigger: Program milestone approaching (from program_tracker)  
+#    "Day 5 of your 30-day challenge: log your morning glucose."  
+#    Priority: "low"  
+#  
+# 7. check_mood_reminder(user_id) -> Optional[NudgeRecord]  
+#    Trigger: No mood entry today (query LTM for last mood_pattern)  
+#    "How are you feeling today?"  
+#    Priority: "low"  
+#  
+# Storage: PostgresStore under ("nudges", user_id) namespace  
+# Delivery: NOT sent directly — stored and delivered via Firebase FCM  
+#           through Node.js backend calling GET /api/nudges
+app/integrations/firebase_push.py — CREATE firebase_push.py:1
+
+# class FirebasePushService:  
+#     def __init__(self):  
+#         # Init Firebase Admin SDK using FIREBASE_CREDENTIALS_PATH  
+#  
+# 1. send_notification(device_token, title, body, data=None) -> bool  
+#    Single push via FCM. data can include nudge_type, nudge_id, deep_link.  
+#  
+# 2. send_batch(tokens: List[str], title, body, data=None) -> dict  
+#    Multi-device send. Returns {success_count, failure_count, failed_tokens}  
+#  
+# 3. send_nudge(device_token, nudge: NudgeRecord) -> bool  
+#    Convenience: formats NudgeRecord into push notification.  
+#    Critical nudges get "high" FCM priority for immediate delivery.  
+#  
+# Dependencies: firebase-admin SDK, service account JSON
+app/api/routes/nudges.py — CREATE
+
+# 1. GET  /api/v1/nudges  
+#    Returns pending (undelivered) nudges for authenticated user.  
+#    Queries PostgresStore ("nudges", user_id). Marks as delivered=True.  
+#  
+# 2. POST /api/v1/nudges/check  
+#    Triggers nudge engine for the user. Called by Node.js on schedule.  
+#    Returns {generated: int, nudges: List[NudgeRecord]}  
+#  
+# 3. POST /api/v1/nudges/{nudge_id}/acknowledge  
+#    Marks nudge as acknowledged. Updates PostgresStore record.  
+#  
+# 4. POST /api/v1/nudges/schedule  
+#    Schedule custom nudge (e.g., medication reminder at specific time).  
+#    Accepts {nudge_type, message, scheduled_time}
+PHASE 6: Food Recognition + Program Guidance
+app/health/food_recognition.py — CREATE food_recognition.py:1
+Uses the wrapper pattern — swap backend without changing API contract. plan.txt:274-279
+
+
+# class FoodRecognitionResult(BaseModel):  
+#     items: List[str]              # ["white rice", "grilled chicken"]  
+#     estimated_calories: int       # 650  
+#     glycemic_load: str            # "low" | "medium" | "high"  
+#     portion_sizes: List[str]      # ["1 cup", "150g"]  
+#     confidence: float             # 0.85  
+#  
+# Abstract base: FoodRecognitionService  
+#     def recognize(image_base64: str) -> FoodRecognitionResult  
+#  
+# Implementation A: GeminiVisionRecognizer  
+#     Send image to Gemini Vision API with prompt:  
+#     "Identify food items, estimate portions, calories, glycemic load"  
+#     Parse structured JSON response  
+#  
+# Implementation B: CloudVisionNutritionixRecognizer  
+#     Step 1: Google Cloud Vision → identify food labels  
+#     Step 2: Nutritionix API → get nutrition data per item  
+#     Combine results  
+#  
+# Implementation C: CustomModelRecognizer (future placeholder)  
+#     Raises NotImplementedError for now  
+#  
+# Factory: get_food_recognizer() -> FoodRecognitionService  
+#     Returns configured implementation based on settings
+app/integrations/nutrition_api.py — CREATE nutrition_api.py:1
+
+# class NutritionAPIClient:  
+#     Uses NUTRITIONIX_APP_ID and NUTRITIONIX_API_KEY from settings  
+#  
+# 1. lookup_food(food_name: str) -> dict  
+#    POST to Nutritionix /v2/natural/nutrients  
+#    Returns {calories, carbs_g, protein_g, fat_g, fiber_g,  
+#             glycemic_index, glycemic_load}  
+#  
+# 2. lookup_batch(food_items: List[str]) -> List[dict]  
+#    Multiple items, per-item breakdown + meal total  
+#  
+# 3. estimate_glycemic_load(food_items: List[str]) -> str  
+#    Returns "low" (<10), "medium" (10-19), "high" (>=20)  
+#  
+# Fallback: If Nutritionix unavailable, use Gemini to estimate
+app/health/program_tracker.py — CREATE program_tracker.py:1 plan.txt:281-286
+
+# class ProgramTracker:  
+#     def __init__(self, store: BaseStore)  
+#     Programs stored in PostgresStore under ("programs", user_id)  
+#  
+# 1. enroll(user_id, program_id, program_config) -> dict  
+#    Create enrollment: {program_id, name, enrolled_date, current_day,  
+#    total_days, tasks_completed, milestones_achieved, progress_pct}  
+#    Also creates MemoryCandidate(category="program")  
+#  
+# 2. get_programs(user_id) -> List[dict]  
+#    All enrolled programs with progress  
+#  
+# 3. update_progress(user_id, program_id, task_id, completed, notes) -> dict  
+#    Mark task done, recalculate progress_pct, check milestones  
+#    Create MemoryCandidate for milestone achievements  
+#  
+# 4. get_daily_tasks(user_id, program_id) -> List[dict]  
+#    Today's tasks: [{task_id, description, completed, due_time}]  
+#  
+# 5. check_milestones(user_id, program_id) -> List[dict]  
+#    Which milestones are approaching/achieved (used by nudge engine)
+app/api/routes/programs.py — CREATE
+
+# 1. GET  /api/v1/programs                        → list enrolled programs  
+# 2. GET  /api/v1/programs/{id}                    → program detail + tasks + milestones  
+# 3. POST /api/v1/programs/{id}/progress           → update task completion  
+# 4. GET  /api/v1/programs/{id}/tasks              → today's tasks
+PHASE 7: Voice Support + Symptom Triage
+app/integrations/speech.py — CREATE speech.py:1 plan.txt:287-298
+
+# class SpeechToTextService:  
+#     Voice is just a preprocessing step — memory pipeline unchanged.  
+#  
+# 1. transcribe(audio_base64: str, format: str = "wav") -> str  
+#    Decode base64 → bytes → send to STT API → return text  
+#  
+# Option A: Google Speech-to-Text  
+#    Supports English ("en-US") + Hebrew ("he-IL") per SOW  
+#  
+# Option B: OpenAI Whisper API  
+#    client.audio.transcriptions.create(model="whisper-1", file=audio)  
+#  
+# Flow: Audio → transcribe() → text → chatbot.chat(text) → response
+app/health/symptom_triage.py — CREATE symptom_triage.py:1 plan.txt:300-304
+
+# class TriageResult(BaseModel):  
+#     severity: str       # "low" | "medium" | "high" | "critical"  
+#     guidance: str       # Advice text  
+#     escalate: bool      # True → notify physician  
+#     disclaimer: str     # "This is not medical advice..."  
+#  
+# class SymptomTriageEngine:  
+#     def __init__(self, controller: MemoryController)  
+#  
+# 1. assess(user_id, symptoms: str, cgm_data=None) -> TriageResult  
+#    Step 1: Rule engine for critical symptoms  
+#    Step 2: If not critical, LLM with SYMPTOM_TRIAGE_PROMPT  
+#    Step 3: Store as high-salience memory for physician review  
+#  
+# 2. _rule_engine_check(symptoms, cgm_data) -> Optional[TriageResult]  
+#    CRITICAL (escalate=True):  
+#      "chest pain" / "heart" → critical  
+#      CGM < 54 (severe hypo) → critical  
+#      CGM > 300 (severe hyper) → critical  
+#      "difficulty breathing" → critical  
+#      "loss of consciousness" → critical  
+#    HIGH:  
+#      CGM < 70 → guidance about fast-acting carbs  
+#      CGM > 250 → guidance about hydration + check ketones  
+#    Returns None if no rule matches → falls through to LLM  
+#  
+# 3. _llm_triage(user_id, symptoms) -> TriageResult  
+#    Query LTM for health_condition + medication memories  
+#    Send to Gemini with SYMPTOM_TRIAGE_PROMPT  
+#    Always includes medical disclaimer  
+#  
+# 4. _store_triage_memory(user_id, symptoms, result) -> None  
+#    MemoryCandidate(category="health_condition", salience=0.9)
+app/api/routes/chat.py — MODIFY (add voice endpoint)
+
+# Add to existing chat routes:  
+#  
+# POST /api/v1/chat/voice  
+#   Accepts: VoiceChatRequest(audio_base64, format="wav")  
+#   1. Check ENABLE_VOICE feature flag (404 if disabled)  
+#   2. speech.transcribe(audio_base64, format) → text  
+#   3. chatbot.chat(text) → response  
+#   Returns: VoiceChatResponse(response, user_id, transcription=text)
+PHASE 8: Knowledge Directory + HIPAA Prep
+app/health/knowledge_directory.py — CREATE knowledge_directory.py:1 plan.txt:305-329
+
+# class KnowledgeDirectory:  
+#     Separate Pinecone namespace from user personal memories.  
+#     def __init__(self, ltm_manager: PineconeLTMManager)  
+#     self.namespace = "knowledge_directory"  
+#  
+# 1. search(query: str, top_k=5) -> List[dict]  
+#    Semantic search against knowledge namespace  
+#    No user_id filter — shared content  
+#    Returns [{text, category, source, relevance_score}]  
+#    Categories: "program_content", "nutrition_guide", "health_info", "user_generated"  
+#  
+# 2. ingest_content(content, category, source, metadata=None) -> str  
+#    Add content to knowledge directory (called by admin portal)  
+#    Embed and upsert into knowledge namespace  
+#    Returns content_id  
+#  
+# 3. ingest_batch(items: List[dict]) -> List[str]  
+#    Batch ingest: each item = {content, category, source, metadata}  
+#  
+# 4. delete_content(content_id) -> None  
+#  
+# 5. list_content(category=None, limit=100) -> List[dict]  
+#  
+# Integration with chat_node:  
+#   Query BOTH user's personal LTM AND knowledge directory  
+#   Personal memories weighted higher for personalization  
+#   Knowledge directory weighted for factual health info
+app/security/hipaa.py — CREATE (new file)
+
+# 1. Audit Logging  
+#    audit_log(user_id, action, resource, details) -> None  
+#      Actions: "read", "write", "delete", "export", "share"  
+#      Writes to hipaa_audit.jsonl (separate from metrics)  
+#  
+# 2. Consent Tracking  
+#    record_consent(user_id, consent_type, granted, version) -> None  
+#      PostgresStore under ("consent", user_id)  
+#      Types: "data_collection", "data_sharing", "ai_processing", "push_notifications"  
+#    check_consent(user_id, consent_type) -> bool  
+#    revoke_consent(user_id, consent_type) -> None  
+#  
+# 3. Data Encryption Helpers  
+#    encrypt_pii(data: str) -> str  
+#      AES-256 with HIPAA_ENCRYPTION_KEY env var  
+#    decrypt_pii(encrypted: str) -> str  
+#  
+# 4. Data Retention  
+#    apply_retention_policy(user_id) -> int  
+#      Configurable per category:  
+#        cgm_pattern: 365 days, mood_pattern: 180 days, medication: never expire  
+#      Returns records deleted  
+#  
+# 5. Right to Deletion  
+#    delete_all_user_data(user_id) -> dict  
+#      Covers ALL stores: Pinecone LTM, PostgresStore (summaries, candidates,  
+#      nudges, programs, consent), metrics logs  
+#      Returns {pinecone_deleted, postgres_deleted, audit_redacted}
+FILES TO MODIFY (Existing Working Code)
+app/observability/metrics.py — MODIFY metrics.py:29-66
+Add a separate HIPAA audit log method:
+
+
+# Add to _Metrics class:  
+#  
+# _AUDIT_LOG_FILE = os.getenv("HIPAA_AUDIT_LOG", "hipaa_audit.jsonl")  
+# self._audit_handle = open(_AUDIT_LOG_FILE, "a", buffering=1) in __init__  
+#  
+# def audit(self, user_id: str, action: str, resource: str, **kwargs) -> None:  
+#     """HIPAA audit log — separate from operational metrics."""  
+#     record = {  
+#         "ts": datetime.utcnow().isoformat() + "Z",  
+#         "event": "hipaa_audit",  
+#         "user_id": user_id,  
+#         "action": action,       # read, write, delete, export, share  
+#         "resource": resource,   # memories, cgm, mood, food, etc.  
+#         **kwargs,  
+#     }  
+#     with self._lock:  
+#         self._events.append(record)  
+#         self._counts["hipaa_audit"] += 1  
+#         if self._audit_handle:  
+#             self._audit_handle.write(json.dumps(record) + "\n")
+app/memory/controller.py — MODIFY controller.py:54-57
+Add method for health data injection (used by Phase 3 health endpoints):
+
+
+# Add after line 83 (self._extraction_cache):  
+#  
+# def inject_health_memory(  
+#     self, store: BaseStore, user_id: str, thread_id: str,  
+#     candidate: MemoryCandidate  
+# ) -> None:  
+#     """  
+#     Inject a health data memory candidate directly into STM-C buffer.  
+#     Health data (CGM, mood, food, activity) flows through existing  
+#     dedup, scoring, conflict resolution, and LTM gate pipeline.  
+#     """  
+#     ns = ("candidates", user_id, thread_id)  
+#     existing_items = store.search(ns)  
+#     existing_texts = {  
+#         item.value.get("data", {}).get("text", "")  
+#         for item in existing_items  
+#     }  
+#     if candidate.text not in existing_texts:  
+#         store.put(ns, str(uuid.uuid4()), {"data": candidate.model_dump()})  
+#         metrics.log("health_memory_injected",  
+#                     user_id=user_id, category=candidate.category)
+app/graph/nodes.py — MODIFY nodes.py:190-243 nodes.py:254-260
+Two changes:
+
+1. Modify chat_node (after line 218) — query knowledge directory too:
+
+
+# After ltm_memories = controller.get_ltm_memories_semantic(...)  
+#  
+# # Knowledge directory query (Phase 8)  
+# from app.config.settings import ENABLE_CGM  # reuse as feature check  
+# kd_text = ""  
+# try:  
+#     from app.health.knowledge_directory import KnowledgeDirectory  
+#     kd = KnowledgeDirectory(controller.ltm)  
+#     kd_results = kd.search(latest_user_msg, top_k=3)  
+#     if kd_results:  
+#         kd_text = "\n".join(  
+#             f"[KNOWLEDGE] {r.get('text','')}" for r in kd_results  
+#         )  
+# except Exception:  
+#     pass  
+# ltm_text = ltm_text + "\n" + kd_text if kd_text else ltm_text
+2. Add health_correlation_node to make_nodes return dict:
+
+
+# def health_correlation_node(state, config, *, store):  
+#     cfg = config["configurable"]  
+#     user_id = cfg["user_id"]  
+#     latest_msg = state["messages"][-1].content if state["messages"] else ""  
+#     health_keywords = ["glucose", "cgm", "sugar", "ate", "meal", "food",  
+#                        "mood", "stress", "exercise", "walk", "run"]  
+#     if not any(kw in latest_msg.lower() for kw in health_keywords):  
+#         return {}  
+#     from app.health.correlation_engine import CorrelationEngine  
+#     engine = CorrelationEngine(controller)  
+#     engine.correlate(user_id, trigger_event=latest_msg)  
+#     return {}  
+#  
+# return {  
+#     "stm_a_update":        stm_a_node,  
+#     "stm_b_update":        stm_b_node,  
+#     "stm_c_extract":       stm_c_node,  
+#     "ltm_gate":            ltm_gate_node,  
+#     "health_correlation":  health_correlation_node,  # NEW  
+#     "chat":                chat_node,  
+# }
+app/graph/builder.py — MODIFY builder.py:13-35
+Replace linear ltm_gate → chat edge with conditional:
+
+
+# builder.add_node("health_correlation", nodes["health_correlation"])  
+#  
+# def _route_after_ltm(state):  
+#     from app.config.settings import ENABLE_CGM  
+#     if not ENABLE_CGM:  
+#         return "chat"  
+#     latest = state["messages"][-1].content if state["messages"] else ""  
+#     health_kw = ["glucose","cgm","sugar","ate","meal","food",  
+#                  "mood","stress","exercise"]  
+#     return "health_correlation" if any(k in latest.lower() for k in health_kw) else "chat"  
+#  
+# # REMOVE: builder.add_edge("ltm_gate", "chat")  
+# # ADD:  
+# builder.add_conditional_edges("ltm_gate", _route_after_ltm)  
+# builder.add_edge("health_correlation", "chat")
+New pipeline:
+
+
+START → stm_a → stm_b → stm_c → ltm_gate → [conditional] → chat → END  
+                                                  ↓  
+                                          health_correlation  
+                                                  ↓  
+                                                chat
+app/chatbot.py — MODIFY chatbot.py:110-126
+
+# Line 113: Remove print() from prune_stale_memories(), just return count  
+#  
+# Add new method after line 126:  
+#  
+# def inject_health_memory(self, candidate: MemoryCandidate) -> None:  
+#     """Inject health data into memory pipeline."""  
+#     with PostgresStore.from_conn_string(self.db_uri) as store:  
+#         thread_id = f"thread-{self.user_id}"  
+#         self.controller.inject_health_memory(  
+#             store, self.user_id, thread_id, candidate  
+#         )
+app/config/settings.py — MODIFY settings.py:1-61
+Add at the bottom:
+
+
+# ── API ──  
+# API_HOST = os.getenv("API_HOST", "0.0.0.0")  
+# API_PORT = int(os.getenv("API_PORT", "8000"))  
+# CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")  
+# JWT_SECRET = os.getenv("JWT_SECRET", "change-me-in-production")  
+# JWT_ALGORITHM = "HS256"  
+# RATE_LIMIT_PER_MINUTE = 60  
+#  
+# ── Health categories ──  
+# VALID_CATEGORIES = ["identity","health_condition","medication","dietary",  
+#     "cgm_pattern","mood_pattern","activity","program","preferences"]  
+#  
+# ── Feature flags ──  
+# ENABLE_CGM = os.getenv("ENABLE_CGM", "true").lower() == "true"  
+# ENABLE_NUDGES = os.getenv("ENABLE_NUDGES", "true").lower() == "true"  
+# ENABLE_FOOD_RECOGNITION = os.getenv("ENABLE_FOOD_RECOGNITION", "true").lower() == "true"  
+# ENABLE_VOICE = os.getenv("ENABLE_VOICE", "false").lower() == "true"  
+#  
+# ── CGM thresholds ──  
+# CGM_NORMAL_LOW = 70.0  
+# CGM_NORMAL_HIGH = 140.0  
+# CGM_SPIKE_THRESHOLD = 180.0  
+# CGM_HYPO_THRESHOLD = 70.0  
+#  
+# ── Nudge settings ──  
+# NUDGE_CHECK_INTERVAL_MINUTES = 30  
+# MEAL_REMINDER_HOURS = 5  
+#  
+# ── External API keys ──  
+# FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH", "")  
+# NUTRITIONIX_APP_ID = os.getenv("NUTRITIONIX_APP_ID", "")  
+# NUTRITIONIX_API_KEY = os.getenv("NUTRITIONIX_API_KEY", "")  
+# GOOGLE_SPEECH_API_KEY = os.getenv("GOOGLE_SPEECH_API_KEY", "")  
+# HIPAA_ENCRYPTION_KEY = os.getenv("HIPAA_ENCRYPTION_KEY", "")
+app/prompts/templates.py — MODIFY templates.py:5-51
+Rewrite CHAT_SYSTEM_PROMPT with health domain identity, CGM interpretation guidelines (70-140 normal, >180 spike, <70 hypo), nutrition framework, medication awareness, symptom triage escalation rules, mood-glucose correlation awareness, and medical disclaimer.
+
+Rewrite CANDIDATE_EXTRACTION_PROMPT categories from identity | preferences | projects | facts to identity | health_condition | medication | dietary | cgm_pattern | mood_pattern | activity | program | preferences.
+
+Update SCORING_PROMPT salience guidelines: high (0.8-1.0) for health conditions/medication/recurring CGM patterns, medium (0.5-0.7) for dietary/exercise/mood, low (0.0-0.4) for one-off readings.
+
+app/prompts/health_prompts.py — CREATE health_prompts.py:1
+
+# 1. CGM_ANALYSIS_PROMPT  
+#    Input: CGM batch + recent food/mood/activity memories  
+#    Output: Pattern analysis, severity, likely causes, recommendations  
+#  
+# 2. CORRELATION_PROMPT  
+#    Input: Timeline [food at 12:30] → [spike at 13:15] → [mood at 14:00]  
+#    Output: Correlation insight + confidence level  
+#  
+# 3. SYMPTOM_TRIAGE_PROMPT  
+#    Input: Symptoms, CGM data, medication history  
+#    Output: Severity, guidance, escalate boolean, disclaimer  
+#  
+# 4. NUTRITION_ADVICE_PROMPT  
+#    Input: Food log, CGM response, dietary memories, health conditions  
+#    Output: Personalized nutrition guidance with glycemic impact  
+#  
+# 5. NUDGE_GENERATION_PROMPT  
+#    Input: User state (last meal, last mood, CGM trend, program progress)  
+#    Output: Nudge text, type, priority  
+#  
+# 6. PROGRAM_GUIDANCE_PROMPT  
+#    Input: Program details, progress, recent health data  
+#    Output: Today's guidance, tasks, motivational message
+main.py — MODIFY main.py:14-25
+
+# Add --api flag:  
+# if "--api" in sys.argv:  
+#     uvicorn.run("app.api.main:app", host=API_HOST, port=API_PORT, reload=True)  
+# else:  
+#     # existing CLI mode
+endpoints.py — DEPRECATE endpoints.py:1-64
+Old API layer with no auth. Keep temporarily for backward compatibility. Remove once app/api/ is fully working.
+
+
+
+# NEW FILES
+No | File                                      | Phase | What To Do
+---|-------------------------------------------|-------|--------------------------------------------------------------
+1  | app/api/main.py                           | 1     | FastAPI app init, CORS, include all routers
+2  | app/api/dependencies.py                   | 1     | get_chatbot() + get_current_user() DI functions
+3  | app/api/middleware/auth.py                | 1     | JWT Bearer token validation middleware
+4  | app/api/middleware/rate_limit.py          | 1     | Per-user rate limiter (60 req/min)
+5  | app/api/schemas/chat.py                   | 1     | ChatRequest, ChatResponse, VoiceChatRequest models
+6  | app/api/schemas/health.py                 | 1     | CGMBatch, MoodEntry, FoodLog, ActivityLog models
+7  | app/api/schemas/memories.py               | 1     | MemoriesResponse, SearchResponse models
+8  | app/api/schemas/programs.py               | 1     | ProgramSummary, ProgramProgress models
+9  | app/api/schemas/system.py                 | 1     | HealthResponse, PruneResponse, MetricsResponse
+10 | app/api/routes/chat.py                    | 1,7   | POST /chat, POST /chat/voice
+11 | app/api/routes/memories.py                | 1     | GET/DELETE memories, search, history
+12 | app/api/routes/system.py                  | 1     | Health check, prune, metrics
+13 | app/api/routes/cgm.py                     | 3     | POST /cgm/readings, GET /cgm/summary
+14 | app/api/routes/mood.py                    | 3     | POST /mood
+15 | app/api/routes/food.py                    | 3,6   | POST /food/log, POST /food/recognize
+16 | app/api/routes/activity.py                | 3     | POST /activity
+17 | app/api/routes/nudges.py                  | 5     | GET nudges, POST check, POST acknowledge, POST schedule
+18 | app/api/routes/programs.py                | 6     | GET programs, POST progress, GET tasks
+19 | app/security/auth.py                      | 1     | JWT decode, Role enum, require_role() decorator
+20 | app/security/hipaa.py                     | 8     | Audit log, consent tracking, encryption, retention, deletion
+21 | app/models/health_schemas.py              | 3     | CGMReading, MoodEntry, FoodLog, ActivityLog, NudgeRecord, CGMSummary
+22 | app/prompts/health_prompts.py             | 2,4   | CGM_ANALYSIS, CORRELATION, SYMPTOM_TRIAGE, NUTRITION, NUDGE, PROGRAM prompts
+23 | app/health/cgm_processor.py               | 3,4   | Normalize readings, detect spikes/hypos, compute summary, trends
+24 | app/health/correlation_engine.py          | 4     | Build timeline, correlate data, detect patterns, generate insights
+25 | app/health/nudge_engine.py                | 5     | Background nudge generation (alerts, reminders, insights)
+26 | app/health/food_recognition.py            | 6     | Wrapper for vision APIs, returns food items, calories, glycemic load
+27 | app/health/program_tracker.py             | 6     | Program enroll, progress, tasks, milestone checks
+28 | app/health/symptom_triage.py              | 7     | Rule-based + LLM triage, escalation logic
+29 | app/health/knowledge_directory.py         | 8     | Pinecone namespace for admin content, search/ingest/delete
+30 | app/integrations/firebase_push.py         | 5     | Send push notifications via Firebase Admin SDK
+31 | app/integrations/nutrition_api.py         | 6     | Nutritionix client + glycemic load estimation
+32 | app/integrations/speech.py                | 7     | Speech-to-text (Whisper/Google), audio preprocessing
+
+
+# FILES TO MODIFY
+No | File                                      | Phase | What Changes
+---|-------------------------------------------|-------|--------------------------------------------------------------
+33 | app/config/settings.py                    | 1-8   | Add JWT, CORS, health configs, feature flags, API keys
+34 | app/prompts/templates.py                  | 2     | Rewrite system + extraction + scoring prompts
+35 | app/models/schemas.py                     | 2     | Add VALID_CATEGORIES reference (no schema change)
+36 | app/graph/builder.py                      | 4     | Add health_correlation node + conditional routing
+37 | app/graph/nodes.py                        | 4,8   | Add health node, update chat node for knowledge merge
+38 | app/memory/controller.py                  | 3     | Add inject_health_memory() method
+39 | app/chatbot.py                            | 3     | Add inject wrapper, remove debug prints
+40 | app/observability/metrics.py              | 8     | Add HIPAA audit logging method
+41 | main.py                                   | 1     | Add --api flag for FastAPI mode
+42 | endpoints.py                              | 1     | Deprecate (temporary)
