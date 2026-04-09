@@ -63,6 +63,8 @@ app/
 │   ├── isolation.py                  # Unchanged  
 │   └── auth.py                       # JWT + RBAC (Phase 1)  
 └── test_suite.py                     # Extended with health tests
+
+
 Phase 1: FastAPI REST Layer + Auth
 Goal: Expose the existing chatbot as HTTP endpoints for the Node.js backend.
 
@@ -86,6 +88,8 @@ app/config/settings.py	Modify — add API_HOST, API_PORT, CORS_ORIGINS, JWT_SECR
 app/chatbot.py	Modify — remove print() from prune_stale_memories()
 main.py	Modify — add --api flag for FastAPI server
 requirements.txt	Create — all dependencies
+
+
 Key endpoints:
 
 
