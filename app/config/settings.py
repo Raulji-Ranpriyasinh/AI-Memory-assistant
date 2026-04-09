@@ -52,7 +52,7 @@ RECENCY_WEIGHT: float   = 0.10
 
 # ── LLM models ────────────────────────────────────────────────────────────────
 CHAT_MODEL: str   = "gemini-2.5-flash"
-MEMORY_MODEL: str = "gemini-2.0-flash-lite"   # Cheaper for high-volume ops
+MEMORY_MODEL: str = "gemini-2.5-flash"   # Cheaper for high-volume ops
 CHAT_TEMPERATURE: float   = 0.7
 MEMORY_TEMPERATURE: float = 0.0
 
