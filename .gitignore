@@ -1,3 +1,4 @@
 .env
 __pycache__/
 ltm_metrics.jsonl
+.qwen

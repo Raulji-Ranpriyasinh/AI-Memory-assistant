@@ -3,5 +3,6 @@
     "allow": [
       "Bash(type *)"
     ]
-  }
+  },
+  "$version": 3
 }
