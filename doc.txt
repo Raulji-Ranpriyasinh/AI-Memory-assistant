@@ -3,13 +3,13 @@ The repo has the correct directory structure in place matching the plan's 8-phas
 
 What's Actually Working
 # COMPONENT STATUS
-Component                                               | Status | Key Files
---------------------------------------------------------|--------|-----------------------------------------------------------
-Multi-layer memory chatbot                              | Done   | app/chatbot.py, app/graph/nodes.py, app/graph/builder.py
-LangGraph pipeline (STM-A → STM-B → STM-C → LTM Gate → Chat) | Done   | app/graph/builder.py
-Pinecone LTM (store, search, dedup, decay, prune)       | Done   | app/memory/
-Basic REST endpoints (chat, memories, search, prune, metrics) | Done   | endpoints.py
-Generic prompts (chat, extraction, scoring, conflict)   | Done   | app/prompts/templates.py
+Component                                                       | Status | Key Files
+--------------------------------------------------------|-------|-----------------------------------------------------------
+Multi-layer memory chatbot                                      | Done   | app/chatbot.py, app/graph/nodes.py, app/graph/builder.py
+LangGraph pipeline (STM-A → STM-B → STM-C → LTM Gate → Chat)    | Done   | app/graph/builder.py
+Pinecone LTM (store, search, dedup, decay, prune)               | Done   | app/memory/
+Basic REST endpoints (chat, memories, search, prune, metrics)   | Done   | endpoints.py
+Generic prompts (chat, extraction, scoring, conflict)           | Done   | app/prompts/templates.py
 What's Empty Stubs (1-line comment only)
 Every file below contains only a single comment — no actual code:
 
