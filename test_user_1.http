@@ -1,0 +1,26 @@
+### User 1: Tell the bot my name
+POST http://localhost:8000/api/chat
+Content-Type: application/json
+
+{
+  "message": "My name is Alice",
+  "user_id": "1"
+}
+
+### User 1: Ask what is my name
+POST http://localhost:8000/api/chat
+Content-Type: application/json
+
+{
+  "message": "what is my name?",
+  "user_id": "1"
+}
+
+### User 1: Check stored memories
+GET http://localhost:8000/api/memories?user_id=1
+
+### User 1: Search memories about name
+GET http://localhost:8000/api/memories/search?query=my name&top_k=5&user_id=1
+
+### User 1: Get conversation history
+GET http://localhost:8000/api/history?user_id=1
