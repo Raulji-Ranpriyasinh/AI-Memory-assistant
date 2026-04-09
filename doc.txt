@@ -2,31 +2,34 @@ Current State: Mostly Scaffolded, Not Implemented
 The repo has the correct directory structure in place matching the plan's 8-phase architecture, but almost every health/AI file is an empty stub — just a single comment line. The only fully implemented parts are the core memory chatbot (STM-A/B/C + Pinecone LTM pipeline) and a basic REST API (endpoints.py).
 
 What's Actually Working
-Component	Status	Key Files
-Multi-layer memory chatbot	Done	app/chatbot.py, app/graph/nodes.py, app/graph/builder.py
-LangGraph pipeline (STM-A → STM-B → STM-C → LTM Gate → Chat)	Done	app/graph/builder.py
-Pinecone LTM (store, search, dedup, decay, prune)	Done	app/memory/
-Basic REST endpoints (chat, memories, search, prune, metrics)	Done	endpoints.py
-Generic prompts (chat, extraction, scoring, conflict)	Done	app/prompts/templates.py
+# COMPONENT STATUS
+Component                                               | Status | Key Files
+--------------------------------------------------------|--------|-----------------------------------------------------------
+Multi-layer memory chatbot                              | Done   | app/chatbot.py, app/graph/nodes.py, app/graph/builder.py
+LangGraph pipeline (STM-A → STM-B → STM-C → LTM Gate → Chat) | Done   | app/graph/builder.py
+Pinecone LTM (store, search, dedup, decay, prune)       | Done   | app/memory/
+Basic REST endpoints (chat, memories, search, prune, metrics) | Done   | endpoints.py
+Generic prompts (chat, extraction, scoring, conflict)   | Done   | app/prompts/templates.py
 What's Empty Stubs (1-line comment only)
 Every file below contains only a single comment — no actual code:
 
-File	Plan Phase	SOW Feature
-app/health/cgm_processor.py	Phase 3-4	CGM data normalization, spike/hypo detection
-app/health/correlation_engine.py	Phase 4	Cross-signal correlation (CGM × food × mood)
-app/health/food_recognition.py	Phase 6	Image-based food detection
-app/health/nudge_engine.py	Phase 5	Proactive nudge generation
-app/health/symptom_triage.py	Phase 7	Rule-based symptom assessment
-app/health/knowledge_directory.py	Phase 8	Knowledge base integration
-app/health/program_tracker.py	Phase 6	Program progress + task management
-app/models/health_schemas.py	Phase 3	CGM, mood, food, activity Pydantic models
-app/prompts/health_prompts.py	Phase 2-4	Health-aware prompts, CGM analysis
-app/security/auth.py	Phase 1	JWT + RBAC
-app/integrations/firebase_push.py	Phase 5	FCM push notifications
-app/integrations/speech.py	Phase 7	Speech-to-text
-app/integrations/nutrition_api.py	Phase 6	Nutritionix/Edamam API
-app/api/main.py (under app/api/)	Phase 1	FastAPI app with CORS, auth middleware
-app/api/dependencies.py (under app/api/)	Phase 1	JWT-based DI
+File                                             | Plan Phase | SOW Feature
+-------------------------------------------------|------------|-----------------------------------------------------------
+app/health/cgm_processor.py                      | Phase 3-4  | CGM data normalization, spike/hypo detection
+app/health/correlation_engine.py                 | Phase 4    | Cross-signal correlation (CGM × food × mood)
+app/health/food_recognition.py                   | Phase 6    | Image-based food detection
+app/health/nudge_engine.py                       | Phase 5    | Proactive nudge generation
+app/health/symptom_triage.py                     | Phase 7    | Rule-based symptom assessment
+app/health/knowledge_directory.py                | Phase 8    | Knowledge base integration
+app/health/program_tracker.py                    | Phase 6    | Program progress + task management
+app/models/health_schemas.py                     | Phase 3    | CGM, mood, food, activity Pydantic models
+app/prompts/health_prompts.py                    | Phase 2-4  | Health-aware prompts, CGM analysis
+app/security/auth.py                             | Phase 1    | JWT + RBAC
+app/integrations/firebase_push.py                | Phase 5    | FCM push notifications
+app/integrations/speech.py                       | Phase 7    | Speech-to-text
+app/integrations/nutrition_api.py                | Phase 6    | Nutritionix/Edamam API
+app/api/main.py (under app/api/)                 | Phase 1    | FastAPI app with CORS, auth middleware
+app/api/dependencies.py (under app/api/)         | Phase 1    | JWT-based DI
 AI Scope from the SOW — Detailed Breakdown
 The SOW defines 3 major AI sub-systems plus a cross-cutting knowledge layer:
 
