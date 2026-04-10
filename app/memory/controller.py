@@ -307,3 +307,26 @@ class MemoryController:
                         store.put(
                             ns, f"summary_{threshold}", {"data": summary.model_dump()}
                         )
+
+    # ── Health memory injection ─────────────────────────────────────────────
+
+    def inject_health_memory(
+        self,
+        store: BaseStore,
+        user_id: str,
+        thread_id: str,
+        candidate: "MemoryCandidate",
+    ) -> None:
+        """
+        Inject a health data memory candidate into the STM-C buffer via PostgresStore.
+        Avoids duplicates by checking existing entries.
+        """
+        ns = ("candidates", user_id, thread_id)
+        existing = {i.value.get("data", {}).get("text", "") for i in store.search(ns)}
+        if candidate.text not in existing:
+            store.put(ns, str(uuid.uuid4()), {"data": candidate.model_dump()})
+            metrics.log(
+                "health_memory_injected",
+                user_id=user_id,
+                category=candidate.category,
+            )

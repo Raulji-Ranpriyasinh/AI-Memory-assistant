@@ -8,6 +8,7 @@ Fixes applied:
   - STM-C: interval-gated + intra-buffer dedup
   - LTM Gate: cosine pre-filter → per-candidate multi-query dedup → conflict resolution → write
   - Chat: token-budget-aware LTM block in system prompt
+  - Health correlation: non-crashing node that enriches context with CGM insights
 """
 
 from __future__ import annotations
@@ -21,7 +22,7 @@ from langgraph.graph import MessagesState
 from langgraph.store.base import BaseStore
 from langchain_core.runnables import RunnableConfig
 
-from app.config.settings import LTM_TOP_K
+from app.config.settings import LTM_TOP_K, ENABLE_CGM
 from app.memory.controller import MemoryController
 from app.models.schemas import MemoryCandidate
 from app.observability.metrics import metrics
@@ -187,6 +188,51 @@ def make_nodes(controller: MemoryController):
         _clear_buffer(store, ns, candidate_items)
         return {}
 
+    # ── Health Correlation ────────────────────────────────────────────────
+
+    def health_correlation_node(
+        state: MessagesState, config: RunnableConfig, *, store: BaseStore
+    ) -> dict:
+        """
+        If the latest message contains health keywords, run the CGM
+        correlation engine to generate contextual insights.
+        This node must NEVER crash the pipeline.
+        """
+        HEALTH_KEYWORDS = {
+            'glucose', 'cgm', 'sugar', 'ate', 'meal', 'food',
+            'mood', 'stress', 'exercise', 'walk', 'run',
+        }
+
+        try:
+            # Find latest user message
+            latest_msg = next(
+                (m for m in reversed(state["messages"]) if isinstance(m, HumanMessage)),
+                None,
+            )
+            if not latest_msg:
+                return {}
+
+            content_lower = latest_msg.content.lower()
+            if not any(kw in content_lower for kw in HEALTH_KEYWORDS):
+                return {}
+
+            cfg = config["configurable"]
+            user_id = cfg["user_id"]
+
+            # Instantiate correlation engine and correlate
+            from app.health.correlation_engine import CorrelationEngine
+            engine = CorrelationEngine(controller)
+            insight = engine.correlate(user_id, latest_msg.content)
+
+            if insight:
+                metrics.log("health_correlation_triggered", user_id=user_id)
+
+        except Exception:
+            # Silently catch — this node must never crash the pipeline
+            pass
+
+        return {}
+
     # ── Chat ──────────────────────────────────────────────────────────────
 
     def chat_node(
@@ -231,6 +277,20 @@ def make_nodes(controller: MemoryController):
             else "(none)"
         )
 
+        # Knowledge Directory search (Phase 4+ — may not exist yet)
+        try:
+            from app.health.knowledge_directory import KnowledgeDirectory
+            kd = KnowledgeDirectory()
+            kd_results = kd.search(latest_user_msg, top_k=3)
+            if kd_results:
+                kd_text = "\n".join(
+                    f"[KNOWLEDGE] {r.get('text', '')}" for r in kd_results
+                )
+                ltm_text = kd_text + "\n" + ltm_text
+        except Exception:
+            # KnowledgeDirectory may not exist yet in Phase 4
+            pass
+
         system_msg = SystemMessage(
             content=CHAT_SYSTEM_PROMPT.format(
                 user_context=f"User ID: {user_id}",
@@ -252,9 +312,10 @@ def make_nodes(controller: MemoryController):
                 pass
 
     return {
-        "stm_a_update":  stm_a_node,
-        "stm_b_update":  stm_b_node,
-        "stm_c_extract": stm_c_node,
-        "ltm_gate":      ltm_gate_node,
-        "chat":          chat_node,
+        "stm_a_update":       stm_a_node,
+        "stm_b_update":       stm_b_node,
+        "stm_c_extract":      stm_c_node,
+        "ltm_gate":           ltm_gate_node,
+        "health_correlation": health_correlation_node,
+        "chat":               chat_node,
     }

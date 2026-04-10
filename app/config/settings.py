@@ -59,3 +59,40 @@ MEMORY_TEMPERATURE: float = 0.0
 # ── Security ───────────────────────────────────────────────────────────────────
 # Hard limit: no single fetch may return more than this many memories
 MAX_MEMORIES_PER_USER: int = 10_000
+
+# ── API ────────────────────────────────────────────────────────────────────────
+API_HOST: str = os.getenv('API_HOST', '0.0.0.0')
+API_PORT: int = int(os.getenv('API_PORT', '8000'))
+CORS_ORIGINS: list[str] = os.getenv('CORS_ORIGINS', 'http://localhost:3000').split(',')
+JWT_SECRET: str = os.getenv('JWT_SECRET', 'change-me-in-production')
+JWT_ALGORITHM: str = 'HS256'
+RATE_LIMIT_PER_MINUTE: int = 60
+
+# ── Health categories ──────────────────────────────────────────────────────────
+VALID_CATEGORIES: list[str] = [
+    'identity', 'health_condition', 'medication', 'dietary',
+    'cgm_pattern', 'mood_pattern', 'activity', 'program', 'preferences'
+]
+
+# ── Feature flags ──────────────────────────────────────────────────────────────
+ENABLE_CGM: bool = os.getenv('ENABLE_CGM', 'true').lower() == 'true'
+ENABLE_NUDGES: bool = os.getenv('ENABLE_NUDGES', 'true').lower() == 'true'
+ENABLE_FOOD_RECOGNITION: bool = os.getenv('ENABLE_FOOD_RECOGNITION', 'true').lower() == 'true'
+ENABLE_VOICE: bool = os.getenv('ENABLE_VOICE', 'false').lower() == 'true'
+
+# ── CGM thresholds ─────────────────────────────────────────────────────────────
+CGM_NORMAL_LOW: float = 70.0
+CGM_NORMAL_HIGH: float = 140.0
+CGM_SPIKE_THRESHOLD: float = 180.0
+CGM_HYPO_THRESHOLD: float = 70.0
+
+# ── Nudge settings ─────────────────────────────────────────────────────────────
+NUDGE_CHECK_INTERVAL_MINUTES: int = 30
+MEAL_REMINDER_HOURS: int = 5
+
+# ── External API keys ──────────────────────────────────────────────────────────
+FIREBASE_CREDENTIALS_PATH: str = os.getenv('FIREBASE_CREDENTIALS_PATH', '')
+NUTRITIONIX_APP_ID: str = os.getenv('NUTRITIONIX_APP_ID', '')
+NUTRITIONIX_API_KEY: str = os.getenv('NUTRITIONIX_API_KEY', '')
+GOOGLE_SPEECH_API_KEY: str = os.getenv('GOOGLE_SPEECH_API_KEY', '')
+HIPAA_ENCRYPTION_KEY: str = os.getenv('HIPAA_ENCRYPTION_KEY', '')
