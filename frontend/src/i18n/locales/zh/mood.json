@@ -1,0 +1,28 @@
+{
+  "title": "您今天感觉如何？",
+  "emotions": {
+    "happy": "开心",
+    "calm": "平静",
+    "energised": "精力充沛",
+    "tired": "疲惫",
+    "anxious": "焦虑",
+    "sad": "悲伤",
+    "irritable": "烦躁",
+    "unwell": "不适",
+    "other": "其他"
+  },
+  "stress": {
+    "label": "压力水平",
+    "low": "低",
+    "moderate": "中等",
+    "high": "高",
+    "ariaValue": "{{max}}分中{{n}}分"
+  },
+  "notesPlaceholder": "关于感受的可选备注...",
+  "logMood": "记录心情",
+  "moodLogged": "心情记录成功",
+  "logFailed": "心情记录失败",
+  "selectEmotion": "选择一种情绪",
+  "aiInsight": "Delight 洞察：",
+  "describeFeelings": "描述您的感受..."
+}

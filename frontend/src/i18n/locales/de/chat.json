@@ -1,0 +1,12 @@
+{
+  "title": "KI-Gesundheitsassistent",
+  "disclaimer": {
+    "heading": "Medizinischer Disclaimer",
+    "body": "Delight ist ein KI-Gesundheitsbegleiter, kein Arzt. Es stellt keine medizinischen Diagnosen und ersetzt keine professionelle Beratung. Konsultieren Sie immer Ihren Arzt für medizinische Entscheidungen."
+  },
+  "inputPlaceholder": "Nachricht eingeben...",
+  "send": "Nachricht senden",
+  "emptyState": "Noch keine Nachrichten. Fragen Sie mich alles über Ihre Gesundheit!",
+  "aiTyping": "Delight denkt...",
+  "aiError": "Der KI-Dienst ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später."
+}

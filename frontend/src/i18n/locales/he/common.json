@@ -1,0 +1,36 @@
+{
+  "save": "שמור",
+  "cancel": "ביטול",
+  "loading": "טוען...",
+  "error": "שגיאה",
+  "back": "חזרה",
+  "next": "הבא",
+  "yes": "כן",
+  "no": "לא",
+  "skip": "דלג",
+  "continue": "המשך",
+  "submit": "שלח",
+  "delete": "מחק",
+  "edit": "ערוך",
+  "add": "הוסף",
+  "remove": "הסר",
+  "search": "חיפוש",
+  "filter": "סינון",
+  "close": "סגור",
+  "open": "פתח",
+  "logout": "התנתק",
+  "selectLanguage": "בחר שפה",
+  "languageChanged": "השפה שונתה ל-{{language}}",
+  "status": {
+    "active": "פעיל",
+    "suspended": "מושהה",
+    "pending": "ממתין"
+  },
+  "timeAgo": "לפני {{n}} {{unit}}",
+  "todayAt": "היום בשעה {{time}}",
+  "units": {
+    "hours": "שעות",
+    "minutes": "דקות",
+    "days": "ימים"
+  }
+}

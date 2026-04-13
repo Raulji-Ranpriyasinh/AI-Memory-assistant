@@ -1,0 +1,12 @@
+{
+  "title": "Yapay Zeka Sağlık Asistanı",
+  "disclaimer": {
+    "heading": "Tıbbi Sorumluluk Reddi",
+    "body": "Delight, bir yapay zeka sağlık arkadaşıdır, doktor değildir. Tıbbi teşhis koymaz ve profesyonel tavsiyenin yerini tutmaz. Tıbbi kararlar için her zaman doktorunuza danışın."
+  },
+  "inputPlaceholder": "Mesajınızı yazın...",
+  "send": "Mesaj gönder",
+  "emptyState": "Henüz mesaj yok. Sağlığınız hakkında her şeyi sorabilirsiniz!",
+  "aiTyping": "Delight düşünüyor...",
+  "aiError": "Yapay zeka hizmeti geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin."
+}

@@ -1,0 +1,28 @@
+{
+  "title": "今日の気分は？",
+  "emotions": {
+    "happy": "嬉しい",
+    "calm": "穏やか",
+    "energised": "元気",
+    "tired": "疲れた",
+    "anxious": "不安",
+    "sad": "悲しい",
+    "irritable": "イライラ",
+    "unwell": "体調不良",
+    "other": "その他"
+  },
+  "stress": {
+    "label": "ストレスレベル",
+    "low": "低い",
+    "moderate": "中程度",
+    "high": "高い",
+    "ariaValue": "{{max}}のうち{{n}}"
+  },
+  "notesPlaceholder": "気分に関する任意メモ...",
+  "logMood": "気分を記録",
+  "moodLogged": "気分を記録しました",
+  "logFailed": "気分の記録に失敗しました",
+  "selectEmotion": "気分を選択",
+  "aiInsight": "Delightのインサイト：",
+  "describeFeelings": "気分を説明してください..."
+}

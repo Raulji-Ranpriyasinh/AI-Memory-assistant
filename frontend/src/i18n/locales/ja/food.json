@@ -1,0 +1,30 @@
+{
+  "title": "食事を記録",
+  "meal": {
+    "breakfast": "朝食",
+    "lunch": "昼食",
+    "dinner": "夕食",
+    "snack": "間食"
+  },
+  "manualEntry": {
+    "foodInput": "食品を追加（Enterで確定）",
+    "calories": "推定カロリー",
+    "kcal": "kcal",
+    "glycemicLoad": "グリセミック負荷",
+    "gl": { "low": "低", "medium": "中", "high": "高" }
+  },
+  "photo": {
+    "uploadPrompt": "写真をドラッグするかタップしてアップロード",
+    "analysing": "食事を分析中...",
+    "timeout": "写真認識がタイムアウトしました。手動で入力してください。",
+    "lowConfidence": "一部のアイテムが不正確な場合があります。保存前に確認してください。",
+    "unavailable": "写真認識は現在利用できません。手動で入力してください。"
+  },
+  "confidence": "信頼度: {{pct}}%",
+  "saveToLog": "食事ログに保存",
+  "logMeal": "食事を記録",
+  "mealLogged": "食事が正常に記録されました",
+  "logFailed": "食事の記録に失敗しました",
+  "addFood": "少なくとも1つの食品を追加してください",
+  "history": { "title": "最近の食事", "empty": "まだ食事が記録されていません" }
+}

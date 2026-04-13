@@ -1,0 +1,36 @@
+{
+  "save": "Save",
+  "cancel": "Cancel",
+  "loading": "Loading...",
+  "error": "Error",
+  "back": "Back",
+  "next": "Next",
+  "yes": "Yes",
+  "no": "No",
+  "skip": "Skip",
+  "continue": "Continue",
+  "submit": "Submit",
+  "delete": "Delete",
+  "edit": "Edit",
+  "add": "Add",
+  "remove": "Remove",
+  "search": "Search",
+  "filter": "Filter",
+  "close": "Close",
+  "open": "Open",
+  "logout": "Logout",
+  "selectLanguage": "Select language",
+  "languageChanged": "Language changed to {{language}}",
+  "status": {
+    "active": "Active",
+    "suspended": "Suspended",
+    "pending": "Pending"
+  },
+  "timeAgo": "{{n}} {{unit}} ago",
+  "todayAt": "Today at {{time}}",
+  "units": {
+    "hours": "hours",
+    "minutes": "minutes",
+    "days": "days"
+  }
+}

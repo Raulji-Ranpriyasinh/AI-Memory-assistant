@@ -1,0 +1,30 @@
+{
+  "title": "Öğün Kaydet",
+  "meal": {
+    "breakfast": "Kahvaltı",
+    "lunch": "Öğle yemeği",
+    "dinner": "Akşam yemeği",
+    "snack": "Atıştırmalık"
+  },
+  "manualEntry": {
+    "foodInput": "Besin ekle (Eklemek için Enter'a basın)",
+    "calories": "Tahmini Kalori",
+    "kcal": "kcal",
+    "glycemicLoad": "Glisemik Yük",
+    "gl": { "low": "Düşük", "medium": "Orta", "high": "Yüksek" }
+  },
+  "photo": {
+    "uploadPrompt": "Fotoğrafı buraya sürükleyin veya yüklemek için dokunun",
+    "analysing": "Öğününüz analiz ediliyor...",
+    "timeout": "Fotoğraf tanıma zaman aşımına uğradı. Lütfen manuel olarak girin.",
+    "lowConfidence": "Bazı öğeler hatalı olabilir. Kaydetmeden önce kontrol edin.",
+    "unavailable": "Fotoğraf tanıma kullanılamıyor. Lütfen manuel olarak girin."
+  },
+  "confidence": "Güven: {{pct}}%",
+  "saveToLog": "Besin günlüğüne kaydet",
+  "logMeal": "Öğünü Kaydet",
+  "mealLogged": "Öğün başarıyla kaydedildi",
+  "logFailed": "Öğün kaydedilemedi",
+  "addFood": "En az bir besin ekleyin",
+  "history": { "title": "Son Öğünler", "empty": "Henüz kayıtlı öğün yok" }
+}

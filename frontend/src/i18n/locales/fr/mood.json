@@ -1,0 +1,28 @@
+{
+  "title": "Comment vous sentez-vous ?",
+  "emotions": {
+    "happy": "Heureux",
+    "calm": "Calme",
+    "energised": "Énergisé",
+    "tired": "Fatigué",
+    "anxious": "Anxieux",
+    "sad": "Triste",
+    "irritable": "Irritable",
+    "unwell": "Mal en point",
+    "other": "Autre"
+  },
+  "stress": {
+    "label": "Niveau de stress",
+    "low": "Faible",
+    "moderate": "Modéré",
+    "high": "Élevé",
+    "ariaValue": "{{n}} sur {{max}}"
+  },
+  "notesPlaceholder": "Notes facultatives sur votre ressenti...",
+  "logMood": "Enregistrer l'humeur",
+  "moodLogged": "Humeur enregistrée avec succès",
+  "logFailed": "Échec de l'enregistrement de l'humeur",
+  "selectEmotion": "Sélectionnez une émotion",
+  "aiInsight": "Observation de Delight :",
+  "describeFeelings": "Décrivez comment vous vous sentez..."
+}

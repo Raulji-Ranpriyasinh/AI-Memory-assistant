@@ -1,0 +1,12 @@
+{
+  "title": "AI-gezondheidsassistent",
+  "disclaimer": {
+    "heading": "Medische disclaimer",
+    "body": "Delight is een AI-gezondheidsmetgezel, geen arts. Het geeft geen medische diagnoses en vervangt geen professioneel advies. Raadpleeg altijd uw arts voor medische beslissingen."
+  },
+  "inputPlaceholder": "Typ uw bericht...",
+  "send": "Bericht verzenden",
+  "emptyState": "Nog geen berichten. Vraag me alles over uw gezondheid!",
+  "aiTyping": "Delight denkt na...",
+  "aiError": "De AI-service is tijdelijk niet beschikbaar. Probeer het later opnieuw."
+}

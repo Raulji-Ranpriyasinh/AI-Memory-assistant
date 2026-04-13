@@ -1,0 +1,37 @@
+{
+  "title": "Log a Meal",
+  "meal": {
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "snack": "Snack"
+  },
+  "manualEntry": {
+    "foodInput": "Add food item (Enter to add)",
+    "calories": "Estimated Calories",
+    "kcal": "kcal",
+    "glycemicLoad": "Glycaemic Load",
+    "gl": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    }
+  },
+  "photo": {
+    "uploadPrompt": "Drag photo here or tap to upload",
+    "analysing": "Analysing your meal...",
+    "timeout": "Photo recognition timed out. Please log manually.",
+    "lowConfidence": "Some items may be inaccurate. Please review before saving.",
+    "unavailable": "Photo recognition unavailable. Please log manually."
+  },
+  "confidence": "Confidence: {{pct}}%",
+  "saveToLog": "Save to Food Log",
+  "logMeal": "Log Meal",
+  "mealLogged": "Meal logged successfully",
+  "logFailed": "Failed to log meal",
+  "addFood": "Add at least one food item",
+  "history": {
+    "title": "Recent Meals",
+    "empty": "No meals logged yet"
+  }
+}

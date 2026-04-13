@@ -1,0 +1,36 @@
+{
+  "save": "保存",
+  "cancel": "キャンセル",
+  "loading": "読み込み中...",
+  "error": "エラー",
+  "back": "戻る",
+  "next": "次へ",
+  "yes": "はい",
+  "no": "いいえ",
+  "skip": "スキップ",
+  "continue": "続ける",
+  "submit": "送信",
+  "delete": "削除",
+  "edit": "編集",
+  "add": "追加",
+  "remove": "削除",
+  "search": "検索",
+  "filter": "フィルター",
+  "close": "閉じる",
+  "open": "開く",
+  "logout": "ログアウト",
+  "selectLanguage": "言語を選択",
+  "languageChanged": "言語を{{language}}に変更しました",
+  "status": {
+    "active": "アクティブ",
+    "suspended": "停止中",
+    "pending": "保留中"
+  },
+  "timeAgo": "{{n}}{{unit}}前",
+  "todayAt": "今日 {{time}}",
+  "units": {
+    "hours": "時間",
+    "minutes": "分",
+    "days": "日"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "unit": { "mgdl": "mg/dL", "mmoll": "mmol/L" },
+  "chart": { "yAxisLabel": "血糖値 ({{unit}})", "ariaLabel": "血糖値グラフ、直近{{period}}。目標範囲は緑でハイライト。" },
+  "referenceLines": { "hypo": "低血糖閾値", "target": "目標範囲上限", "hyper": "高血糖閾値" },
+  "period": { "24h": "24時間", "7d": "7日", "30d": "30日" },
+  "empty": "血糖データがまだありません",
+  "addReading": "最初の記録を追加",
+  "stats": { "avg": "平均血糖", "min": "最小", "max": "最大", "tir": "目標内時間", "spikes": "スパイク", "hypos": "低血糖" },
+  "tooltips": { "avg": "期間中の平均血糖値", "min": "期間中の最低値", "max": "期間中の最高値", "tir": "目標範囲内にいた時間の割合", "spikes": "180 mg/dL超の回数", "hypos": "70 mg/dL未満の回数。頻繁な場合は医師に相談。" },
+  "manualEntry": {
+    "placeholder": "血糖値を入力 ({{unit}})",
+    "add": "追加",
+    "trend": "トレンド",
+    "deviceId": "デバイスID（任意）",
+    "deviceIdPlaceholder": "例: Libre 3",
+    "timestamp": "タイムスタンプ",
+    "trends": { "risingRapidly": "急上昇", "rising": "上昇中", "stable": "安定", "falling": "低下中", "fallingRapidly": "急低下" }
+  },
+  "range": { "hypo": "低血糖", "normal": "正常", "high": "高血糖" },
+  "saved": "血糖値を記録しました",
+  "saveFailed": "血糖値の記録に失敗しました"
+}

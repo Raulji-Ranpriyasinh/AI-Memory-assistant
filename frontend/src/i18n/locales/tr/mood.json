@@ -1,0 +1,28 @@
+{
+  "title": "Nasılsınız?",
+  "emotions": {
+    "happy": "Mutlu",
+    "calm": "Sakin",
+    "energised": "Enerjik",
+    "tired": "Yorgun",
+    "anxious": "Endişeli",
+    "sad": "Üzgün",
+    "irritable": "Sinirli",
+    "unwell": "Hasta",
+    "other": "Diğer"
+  },
+  "stress": {
+    "label": "Stres Düzeyi",
+    "low": "Düşük",
+    "moderate": "Orta",
+    "high": "Yüksek",
+    "ariaValue": "{{max}} üzerinden {{n}}"
+  },
+  "notesPlaceholder": "Nasıl hissettiğinize dair isteğe bağlı notlar...",
+  "logMood": "Ruh Halini Kaydet",
+  "moodLogged": "Ruh hali başarıyla kaydedildi",
+  "logFailed": "Ruh hali kaydedilemedi",
+  "selectEmotion": "Bir duygu seçin",
+  "aiInsight": "Delight içgörüsü:",
+  "describeFeelings": "Nasıl hissettiğinizi açıklayın..."
+}

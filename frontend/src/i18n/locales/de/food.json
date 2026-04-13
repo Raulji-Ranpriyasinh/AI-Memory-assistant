@@ -1,0 +1,30 @@
+{
+  "title": "Mahlzeit eintragen",
+  "meal": {
+    "breakfast": "Frühstück",
+    "lunch": "Mittagessen",
+    "dinner": "Abendessen",
+    "snack": "Snack"
+  },
+  "manualEntry": {
+    "foodInput": "Lebensmittel hinzufügen (Enter zum Bestätigen)",
+    "calories": "Geschätzte Kalorien",
+    "kcal": "kcal",
+    "glycemicLoad": "Glykämische Last",
+    "gl": { "low": "Niedrig", "medium": "Mittel", "high": "Hoch" }
+  },
+  "photo": {
+    "uploadPrompt": "Foto hierher ziehen oder tippen zum Hochladen",
+    "analysing": "Ihre Mahlzeit wird analysiert...",
+    "timeout": "Zeitüberschreitung bei der Fotoerkennung. Bitte manuell eingeben.",
+    "lowConfidence": "Einige Einträge könnten ungenau sein. Bitte vor dem Speichern prüfen.",
+    "unavailable": "Fotoerkennung nicht verfügbar. Bitte manuell eingeben."
+  },
+  "confidence": "Zuverlässigkeit: {{pct}}%",
+  "saveToLog": "Im Ernährungsprotokoll speichern",
+  "logMeal": "Mahlzeit eintragen",
+  "mealLogged": "Mahlzeit erfolgreich eingetragen",
+  "logFailed": "Mahlzeit konnte nicht eingetragen werden",
+  "addFood": "Fügen Sie mindestens ein Lebensmittel hinzu",
+  "history": { "title": "Letzte Mahlzeiten", "empty": "Noch keine Mahlzeiten eingetragen" }
+}

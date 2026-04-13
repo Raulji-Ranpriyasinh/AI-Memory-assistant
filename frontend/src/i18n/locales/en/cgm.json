@@ -1,0 +1,60 @@
+{
+  "unit": {
+    "mgdl": "mg/dL",
+    "mmoll": "mmol/L"
+  },
+  "chart": {
+    "yAxisLabel": "Glucose ({{unit}})",
+    "ariaLabel": "Glucose readings chart, last {{period}}. Target range shaded green."
+  },
+  "referenceLines": {
+    "hypo": "Hypoglycaemia threshold",
+    "target": "Target range upper limit",
+    "hyper": "Hyperglycaemia threshold"
+  },
+  "period": {
+    "24h": "24h",
+    "7d": "7d",
+    "30d": "30d"
+  },
+  "empty": "No glucose data yet",
+  "addReading": "Add your first reading",
+  "stats": {
+    "avg": "Avg Glucose",
+    "min": "Min",
+    "max": "Max",
+    "tir": "Time in Range",
+    "spikes": "Spikes",
+    "hypos": "Hypos"
+  },
+  "tooltips": {
+    "avg": "Average glucose over the selected period",
+    "min": "Lowest reading in period",
+    "max": "Highest reading in period",
+    "tir": "Percentage of time glucose was within your target range",
+    "spikes": "Number of readings above 180 mg/dL (hyperglycaemic events)",
+    "hypos": "Number of readings below 70 mg/dL (hypoglycaemic events). Contact your doctor if frequent."
+  },
+  "manualEntry": {
+    "placeholder": "Enter glucose ({{unit}})",
+    "add": "Add",
+    "trend": "Trend",
+    "deviceId": "Device ID (optional)",
+    "deviceIdPlaceholder": "e.g. Libre 3",
+    "timestamp": "Timestamp",
+    "trends": {
+      "risingRapidly": "Rising Rapidly",
+      "rising": "Rising",
+      "stable": "Stable",
+      "falling": "Falling",
+      "fallingRapidly": "Falling Rapidly"
+    }
+  },
+  "range": {
+    "hypo": "Hypo",
+    "normal": "Normal",
+    "high": "High"
+  },
+  "saved": "Glucose reading saved successfully",
+  "saveFailed": "Failed to save glucose reading"
+}

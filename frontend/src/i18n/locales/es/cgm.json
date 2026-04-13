@@ -1,0 +1,22 @@
+{
+  "unit": { "mgdl": "mg/dL", "mmoll": "mmol/L" },
+  "chart": { "yAxisLabel": "Glucosa ({{unit}})", "ariaLabel": "Gráfico de glucosa, últimas {{period}}. Rango objetivo sombreado en verde." },
+  "referenceLines": { "hypo": "Umbral hipoglucemia", "target": "Límite superior rango objetivo", "hyper": "Umbral hiperglucemia" },
+  "period": { "24h": "24h", "7d": "7d", "30d": "30d" },
+  "empty": "Aún no hay datos de glucosa",
+  "addReading": "Añade tu primera lectura",
+  "stats": { "avg": "Glucosa prom.", "min": "Mín", "max": "Máx", "tir": "Tiempo en rango", "spikes": "Picos", "hypos": "Hipos" },
+  "tooltips": { "avg": "Glucosa media en el período", "min": "Lectura más baja del período", "max": "Lectura más alta del período", "tir": "Porcentaje de tiempo en el rango objetivo", "spikes": "Número de lecturas > 180 mg/dL", "hypos": "Número de lecturas < 70 mg/dL. Consulta a tu médico si es frecuente." },
+  "manualEntry": {
+    "placeholder": "Ingresa glucosa ({{unit}})",
+    "add": "Añadir",
+    "trend": "Tendencia",
+    "deviceId": "ID de dispositivo (opcional)",
+    "deviceIdPlaceholder": "ej. Libre 3",
+    "timestamp": "Marca de tiempo",
+    "trends": { "risingRapidly": "Subiendo rápido", "rising": "Subiendo", "stable": "Estable", "falling": "Bajando", "fallingRapidly": "Bajando rápido" }
+  },
+  "range": { "hypo": "Hipo", "normal": "Normal", "high": "Alto" },
+  "saved": "Lectura de glucosa guardada",
+  "saveFailed": "Error al guardar la lectura de glucosa"
+}

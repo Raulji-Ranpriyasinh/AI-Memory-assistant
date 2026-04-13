@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5442:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - delight-network
+
+  mongodb:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: delight
+      MONGO_INITDB_ROOT_PASSWORD: delight123
+      MONGO_INITDB_DATABASE: delight
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    networks:
+      - delight-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - delight-network
+
+  ai-service:
+    build: ./ai-service
+    ports:
+      - "8000:8000"
+    networks:
+      - delight-network
+
+  backend:
+    build: ./backend
+    ports:
+      - "4000:4000"
+    env_file: .env
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - delight-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - delight-network
+
+volumes:
+  pgdata:
+  mongodata:
+
+networks:
+  delight-network:
+    driver: bridge

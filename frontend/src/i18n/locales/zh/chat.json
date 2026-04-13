@@ -1,0 +1,12 @@
+{
+  "title": "AI健康助手",
+  "disclaimer": {
+    "heading": "医疗免责声明",
+    "body": "Delight 是一款AI健康伴侣，而非医生。它不提供医疗诊断，也不能替代专业建议。请始终咨询医生以做出医疗决策。"
+  },
+  "inputPlaceholder": "输入消息...",
+  "send": "发送消息",
+  "emptyState": "暂无消息。请随时向我提问关于健康的问题！",
+  "aiTyping": "Delight 正在思考...",
+  "aiError": "AI服务暂时不可用，请稍后再试。"
+}

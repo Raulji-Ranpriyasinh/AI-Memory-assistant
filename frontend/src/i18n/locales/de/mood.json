@@ -1,0 +1,28 @@
+{
+  "title": "Wie fühlen Sie sich?",
+  "emotions": {
+    "happy": "Glücklich",
+    "calm": "Ruhig",
+    "energised": "Energiegeladen",
+    "tired": "Müde",
+    "anxious": "Ängstlich",
+    "sad": "Traurig",
+    "irritable": "Reizbar",
+    "unwell": "Unwohl",
+    "other": "Anderes"
+  },
+  "stress": {
+    "label": "Stressniveau",
+    "low": "Niedrig",
+    "moderate": "Mäßig",
+    "high": "Hoch",
+    "ariaValue": "{{n}} von {{max}}"
+  },
+  "notesPlaceholder": "Optionale Notizen zu Ihrem Befinden...",
+  "logMood": "Stimmung eintragen",
+  "moodLogged": "Stimmung erfolgreich eingetragen",
+  "logFailed": "Stimmung konnte nicht eingetragen werden",
+  "selectEmotion": "Wählen Sie eine Emotion",
+  "aiInsight": "Delight-Einsicht:",
+  "describeFeelings": "Beschreiben Sie, wie Sie sich fühlen..."
+}
