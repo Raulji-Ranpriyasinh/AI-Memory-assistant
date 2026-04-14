@@ -1,22 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* ============================================================
    Delight Health — International Design System
-   Modern, Attractive Health Product UI
    ============================================================ */
 
-/* 1. CSS Custom Properties (Design Tokens) */
-:root {
-  /* Primary Colors */
+@theme {
   --color-primary: #2563EB;
   --color-primary-light: #3B82F6;
   --color-primary-dark: #1D4ED8;
   --color-primary-50: #EFF6FF;
   --color-primary-100: #DBEAFE;
-
-  /* Semantic Colors */
   --color-success: #10B981;
   --color-success-light: #D1FAE5;
   --color-warning: #F59E0B;
@@ -25,8 +18,6 @@
   --color-danger-light: #FEE2E2;
   --color-info: #06B6D4;
   --color-info-light: #CFFAFE;
-
-  /* Neutral Colors */
   --color-surface: #FFFFFF;
   --color-background: #F8FAFC;
   --color-background-alt: #F1F5F9;
@@ -36,255 +27,102 @@
   --color-text-tertiary: #94A3B8;
   --color-border: #E2E8F0;
   --color-border-light: #F1F5F9;
-
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%);
-  --gradient-hero: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
-  --gradient-card: linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%);
-  --gradient-success: linear-gradient(135deg, #10B981 0%, #06B6D4 100%);
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-glow: 0 0 40px rgba(37, 99, 235, 0.15);
-
-  /* Border Radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-2xl: 1.5rem;
-  --radius-full: 9999px;
-
-  /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 2. Multilingual Font Stack — Google Fonts loaded in index.html */
 html {
   font-family:
-    'Inter',
-    'Noto Sans',
-    'Noto Sans Arabic',
-    'Noto Sans Hebrew',
-    'Noto Sans JP',
-    'Noto Sans SC',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    'Noto Sans Devanagari',
-    'Noto Sans Cyrillic',
-    sans-serif;
+    'Inter', 'Noto Sans', 'Noto Sans Arabic', 'Noto Sans Hebrew',
+    'Noto Sans JP', 'Noto Sans SC', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', 'Noto Sans Devanagari', 'Noto Sans Cyrillic', sans-serif;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Prevent text size adjustment on orientation change (mobile) */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
-/* 3. Base Styles */
 body {
-  background: var(--color-background);
-  color: var(--color-text-primary);
+  background: #F8FAFC;
+  color: #0F172A;
   line-height: 1.6;
 }
 
-/* 4. RTL Layout Support — using logical CSS properties */
-[dir='rtl'] {
-  text-align: start; /* start = right for RTL, left for LTR */
-}
-
-/* Higher line-height for scripts with diacritics (Arabic harakat, Hebrew niqqud) */
-[dir='rtl'] body,
-[dir='rtl'] p,
-[dir='rtl'] span,
-[dir='rtl'] label,
-[dir='rtl'] input,
-[dir='rtl'] textarea {
-  line-height: 1.9;
-}
-
-/* Flip icon-text spacing for RTL */
+[dir='rtl'] { text-align: start; }
+[dir='rtl'] body, [dir='rtl'] p, [dir='rtl'] span,
+[dir='rtl'] label, [dir='rtl'] input, [dir='rtl'] textarea { line-height: 1.9; }
 [dir='rtl'] .gap-2 > svg:first-child,
-[dir='rtl'] .gap-3 > svg:first-child {
-  order: 1;
-}
-
-/* Ensure form icons flip position in RTL input fields */
+[dir='rtl'] .gap-3 > svg:first-child { order: 1; }
 [dir='rtl'] input[type='email'],
 [dir='rtl'] input[type='password'],
-[dir='rtl'] input[type='text'] {
-  text-align: start;
-}
+[dir='rtl'] input[type='text'] { text-align: start; }
 
-/* 5. Card Component Styles */
 .card {
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border-light);
-  transition: all var(--transition-base);
+  background: #FFFFFF;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  border: 1px solid #F1F5F9;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .card:hover {
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
   transform: translateY(-2px);
 }
 
-/* 6. Button Styles */
 .btn-primary {
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%);
   color: white;
   font-weight: 600;
-  border-radius: var(--radius-lg);
-  transition: all var(--transition-base);
-  box-shadow: var(--shadow-md);
+  border-radius: 0.75rem;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
 }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
 
-.btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-lg);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-/* 7. Input Styles */
-.input-modern {
-  background: var(--color-surface);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 0.75rem 1rem;
-  transition: all var(--transition-base);
-  font-size: 1rem;
-}
-
-.input-modern:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-100);
-  outline: none;
-}
-
-/* 8. Glassmorphism Effect */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255,255,255,0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255,255,255,0.3);
 }
 
-/* 9. Gradient Text */
 .gradient-text {
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* 10. Focus styles for keyboard navigation */
-*:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
+*:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }
 
-/* 11. Minimum touch targets (WCAG 2.5.5) */
-button,
-[role='button'],
-input[type='button'],
-input[type='submit'],
-input[type='checkbox'],
-input[type='radio'] {
-  min-height: 44px;
-  min-width: 44px;
-}
+button, [role='button'], input[type='button'], input[type='submit'],
+input[type='checkbox'], input[type='radio'] { min-height: 44px; min-width: 44px; }
+input, select, textarea { min-height: 44px; }
 
-input,
-select,
-textarea {
-  min-height: 44px;
-}
+.recharts-wrapper { direction: ltr !important; }
 
-/* 12. Data charts do NOT flip in RTL */
-.recharts-wrapper {
-  direction: ltr !important;
-}
-
-/* 13. Smooth transitions */
-html[dir] {
-  transition: direction 0.2s ease;
-}
-
-html {
-  opacity: 1;
-  transition: opacity 0.2s ease;
-}
-
-/* 14. Animation Keyframes */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes slideInRight {
   from { opacity: 0; transform: translateX(20px); }
   to { opacity: 1; transform: translateX(0); }
 }
-
 @keyframes slideInLeft {
   from { opacity: 0; transform: translateX(-20px); }
   to { opacity: 1; transform: translateX(0); }
 }
-
-@keyframes pulse {
+@keyframes pulseSlow {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
 
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+.animate-slide-in-right { animation: slideInRight 0.3s ease-out; }
+.animate-slide-in-left { animation: slideInLeft 0.3s ease-out; }
+.animate-pulse-slow { animation: pulseSlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
-/* 15. Utility Classes */
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-.animate-slide-in-right {
-  animation: slideInRight 0.3s ease-out;
-}
-
-.animate-slide-in-left {
-  animation: slideInLeft 0.3s ease-out;
-}
-
-.animate-pulse-slow {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* 16. Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--color-background-alt);
-  border-radius: var(--radius-full);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-text-tertiary);
-  border-radius: var(--radius-full);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-secondary);
-}
-
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #F1F5F9; border-radius: 9999px; }
+::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #64748B; }

@@ -26,6 +26,10 @@ export class FoodLogDto {
   @IsString()
   @IsOptional()
   photoUrl?: string;
+
+  @IsString()
+  @IsOptional()
+  imageBase64?: string;
 }
 
 export class FoodRecognizeDto {

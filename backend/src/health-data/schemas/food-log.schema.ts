@@ -38,6 +38,9 @@ export class FoodLog {
 
   @Prop()
   photoUrl?: string;
+
+  @Prop()
+  imageBase64?: string;
 }
 
 export const FoodLogSchema = SchemaFactory.createForClass(FoodLog);

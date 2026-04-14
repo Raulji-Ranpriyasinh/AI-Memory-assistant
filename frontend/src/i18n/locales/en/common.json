@@ -21,6 +21,13 @@
   "logout": "Logout",
   "selectLanguage": "Select language",
   "languageChanged": "Language changed to {{language}}",
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "meals": "Meals",
+    "assistant": "AI Assistant",
+    "mood": "Mood",
+    "profile": "Profile"
+  },
   "status": {
     "active": "Active",
     "suspended": "Suspended",

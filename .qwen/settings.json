@@ -25,7 +25,8 @@
       "Bash(echo.)",
       "Bash(rmdir *)",
       "Bash(select-string *)",
-      "Bash(select-object *)"
+      "Bash(select-object *)",
+      "Bash(del *)"
     ]
   },
   "$version": 3

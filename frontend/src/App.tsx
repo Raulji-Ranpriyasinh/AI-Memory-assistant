@@ -5,7 +5,13 @@ import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from './store/authStore';
 import { RTL_LOCALES } from './i18n/i18n';
 import LoginPage from './pages/LoginPage';
-import DemoDashboard from './pages/DemoDashboard';
+import RegisterPage from './pages/RegisterPage';
+import DashboardLayout from './components/layout/DashboardLayout';
+import DashboardPage from './pages/DashboardPage';
+import MealsPage from './pages/MealsPage';
+import AssistantPage from './pages/AssistantPage';
+import MoodPage from './pages/MoodPage';
+import ProfilePage from './pages/ProfilePage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -42,16 +48,64 @@ function App() {
         }}
       />
       <Routes>
+        {/* Standalone pages (no layout) */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        {/* Dashboard pages (with layout) */}
         <Route
-          path="/demo-dashboard"
+          path="/dashboard"
           element={
             <ProtectedRoute>
-              <DemoDashboard />
+              <DashboardLayout>
+                <DashboardPage />
+              </DashboardLayout>
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route
+          path="/meals"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <MealsPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/assistant"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <AssistantPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mood"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <MoodPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <ProfilePage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Redirects */}
+        <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </BrowserRouter>
   );

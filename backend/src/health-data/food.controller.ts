@@ -40,6 +40,7 @@ export class FoodController {
       success: true,
       data: {
         saved: true,
+        imageBase64: dto.imageBase64 ? '(image stored)' : undefined,
       },
     };
   }

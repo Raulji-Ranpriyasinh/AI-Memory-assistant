@@ -4,7 +4,7 @@ FastAPI endpoints — exposes all CLI chatbot functionality as REST endpoints.
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, List
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
@@ -36,6 +36,27 @@ class ErrorResponse(BaseModel):
     detail: Optional[str] = None
 
 
+# Health-related schemas
+class CGMRequest(BaseModel):
+    user_id: str = "default_user"
+    readings: List[dict] = []
+
+
+class MoodRequest(BaseModel):
+    user_id: str = "default_user"
+    emotion: str = ""
+    stressLevel: int = 5
+    notes: str = ""
+    timestamp: Optional[str] = None
+
+
+class FoodLogRequest(BaseModel):
+    user_id: str = "default_user"
+    mealType: str = "lunch"
+    items: List[str] = []
+    timestamp: Optional[str] = None
+
+
 # ── Helper ─────────────────────────────────────────────────────────────────────
 
 def _get_chatbot(user_id: str) -> MultiLayerChatbot:
@@ -48,7 +69,7 @@ def _get_chatbot(user_id: str) -> MultiLayerChatbot:
 
 # ── Chat endpoint ───────────────────────────────────────────────────────────────
 
-@router.post("/api/chat", response_model=ChatResponse)
+@router.post("/api/v1/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     """
     Send a message and get an AI response.
@@ -66,7 +87,7 @@ async def chat(request: ChatRequest):
 
 # ── Memory endpoints ────────────────────────────────────────────────────────────
 
-@router.get("/api/memories")
+@router.get("/api/v1/memories")
 async def get_memories(user_id: str = Query("default_user", description="User ID")):
     """
     View all LTM memories + summaries.
@@ -81,7 +102,7 @@ async def get_memories(user_id: str = Query("default_user", description="User ID
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/api/history")
+@router.get("/api/v1/history")
 async def get_history(user_id: str = Query("default_user", description="User ID")):
     """
     View recent conversation history (STM-A).
@@ -96,7 +117,7 @@ async def get_history(user_id: str = Query("default_user", description="User ID"
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/api/summaries")
+@router.get("/api/v1/summaries")
 async def get_summaries(user_id: str = Query("default_user", description="User ID")):
     """
     View detailed summaries (STM-B).
@@ -112,7 +133,7 @@ async def get_summaries(user_id: str = Query("default_user", description="User I
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/api/memories/search")
+@router.get("/api/v1/memories/search")
 async def search_memories(
     query: str = Query(..., min_length=1, description="Search query"),
     top_k: int = Query(10, ge=1, le=50, description="Number of results"),
@@ -135,7 +156,7 @@ async def search_memories(
 
 # ── Maintenance endpoints ───────────────────────────────────────────────────────
 
-@router.get("/api/metrics")
+@router.get("/api/v1/metrics")
 async def get_metrics(user_id: str = Query("default_user", description="User ID")):
     """
     View observability metrics.
@@ -150,7 +171,7 @@ async def get_metrics(user_id: str = Query("default_user", description="User ID"
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/api/prune", response_model=PruneResponse)
+@router.post("/api/v1/prune", response_model=PruneResponse)
 async def prune_memories(user_id: str = Query("default_user", description="User ID")):
     """
     Run memory decay & pruning.
@@ -171,7 +192,7 @@ async def prune_memories(user_id: str = Query("default_user", description="User 
 
 # ── Memory deletion endpoints ───────────────────────────────────────────────────
 
-@router.delete("/api/memories/{memory_id}")
+@router.delete("/api/v1/memories/{memory_id}")
 async def delete_memory(
     memory_id: str,
     user_id: str = Query("default_user", description="User ID"),
@@ -179,7 +200,7 @@ async def delete_memory(
     """Delete a specific memory by ID."""
     try:
         chatbot = _get_chatbot(user_id)
-        chatbot.delete_memory(memory_id, user_id)
+        chatbot.delete_memory(memory_id)
         return {"message": f"Memory {memory_id} deleted successfully"}
     except HTTPException:
         raise
@@ -187,7 +208,7 @@ async def delete_memory(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete("/api/memories")
+@router.delete("/api/v1/memories")
 async def delete_all_memories(
     user_id: str = Query("default_user", description="User ID"),
 ):
@@ -198,6 +219,75 @@ async def delete_all_memories(
         chatbot = _get_chatbot(user_id)
         chatbot.delete_all_memories()
         return {"message": f"All memories for user '{user_id}' deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── Health integration endpoints ────────────────────────────────────────────────
+
+@router.post("/api/v1/cgm")
+async def process_cgm(request: CGMRequest):
+    """Process CGM readings and provide AI analysis."""
+    try:
+        chatbot = _get_chatbot(request.user_id)
+        # Store readings as a memory for future context
+        if request.readings:
+            latest = request.readings[-1]
+            glucose_val = latest.get("glucoseMgDl", 0)
+            trend = latest.get("trend", "stable")
+            analysis = (
+                f"CGM reading: {glucose_val} mg/dL, trend: {trend}. "
+                f"{'Glucose is in range.' if 70 <= glucose_val <= 140 else 'Glucose needs attention.'}"
+            )
+            chatbot.chat(f"My latest glucose is {glucose_val} mg/dL, trend is {trend}")
+        return {
+            "success": True,
+            "message": "CGM data processed",
+            "readings_count": len(request.readings),
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/api/v1/mood")
+async def process_mood(request: MoodRequest):
+    """Process mood entry and provide AI insight."""
+    try:
+        chatbot = _get_chatbot(request.user_id)
+        chatbot.chat(
+            f"I'm feeling {request.emotion}, stress level {request.stressLevel}/10. "
+            f"Notes: {request.notes}"
+        )
+        return {
+            "success": True,
+            "message": "Mood logged",
+            "aiHint": f"Remembered your {request.emotion} mood entry",
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/api/v1/food/log")
+async def process_food(request: FoodLogRequest):
+    """Process food log and provide AI analysis."""
+    try:
+        chatbot = _get_chatbot(request.user_id)
+        items_str = ", ".join(request.items) if request.items else "no items"
+        chatbot.chat(
+            f"I ate {items_str} for {request.mealType}."
+        )
+        return {
+            "success": True,
+            "message": "Food logged",
+            "meal_type": request.mealType,
+            "items_count": len(request.items),
+        }
     except HTTPException:
         raise
     except Exception as e:
