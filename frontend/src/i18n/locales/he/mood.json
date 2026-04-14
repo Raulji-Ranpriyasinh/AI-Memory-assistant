@@ -1,0 +1,28 @@
+{
+  "title": "איך אתה מרגיש היום?",
+  "emotions": {
+    "happy": "שמח",
+    "calm": "רגוע",
+    "energised": "אנרגטי",
+    "tired": "עייף",
+    "anxious": "חרד",
+    "sad": "עצוב",
+    "irritable": "עצבני",
+    "unwell": "לא בסדר",
+    "other": "אחר"
+  },
+  "stress": {
+    "label": "רמת לחץ",
+    "low": "נמוכה",
+    "moderate": "בינונית",
+    "high": "גבוהה",
+    "ariaValue": "{{n}} מתוך {{max}}"
+  },
+  "notesPlaceholder": "הערות אופציונליות על תחושתך...",
+  "logMood": "רשום מצב רוח",
+  "moodLogged": "מצב הרוח נרשם בהצלחה",
+  "logFailed": "כשל ברישום מצב הרוח",
+  "selectEmotion": "בחר רגש",
+  "aiInsight": "תובנת Delight:",
+  "describeFeelings": "תאר כיצד אתה מרגיש..."
+}

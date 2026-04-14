@@ -1,0 +1,28 @@
+{
+  "title": "¿Cómo te sientes?",
+  "emotions": {
+    "happy": "Feliz",
+    "calm": "Tranquilo",
+    "energised": "Con energía",
+    "tired": "Cansado",
+    "anxious": "Ansioso",
+    "sad": "Triste",
+    "irritable": "Irritable",
+    "unwell": "Mal",
+    "other": "Otro"
+  },
+  "stress": {
+    "label": "Nivel de estrés",
+    "low": "Bajo",
+    "moderate": "Moderado",
+    "high": "Alto",
+    "ariaValue": "{{n}} de {{max}}"
+  },
+  "notesPlaceholder": "Notas opcionales sobre cómo te sientes...",
+  "logMood": "Registrar estado de ánimo",
+  "moodLogged": "Estado de ánimo registrado con éxito",
+  "logFailed": "Error al registrar el estado de ánimo",
+  "selectEmotion": "Selecciona una emoción",
+  "aiInsight": "Observación de Delight:",
+  "describeFeelings": "Describe cómo te sientes..."
+}

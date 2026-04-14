@@ -1,0 +1,28 @@
+{
+  "title": "Hoe voelt u zich?",
+  "emotions": {
+    "happy": "Blij",
+    "calm": "Kalm",
+    "energised": "Energiek",
+    "tired": "Moe",
+    "anxious": "Angstig",
+    "sad": "Verdrietig",
+    "irritable": "Prikkelbaar",
+    "unwell": "Niet lekker",
+    "other": "Anders"
+  },
+  "stress": {
+    "label": "Stressniveau",
+    "low": "Laag",
+    "moderate": "Matig",
+    "high": "Hoog",
+    "ariaValue": "{{n}} van {{max}}"
+  },
+  "notesPlaceholder": "Optionele opmerkingen over hoe u zich voelt...",
+  "logMood": "Stemming vastleggen",
+  "moodLogged": "Stemming succesvol vastgelegd",
+  "logFailed": "Stemming vastleggen mislukt",
+  "selectEmotion": "Selecteer een emotie",
+  "aiInsight": "Delight-inzicht:",
+  "describeFeelings": "Beschrijf hoe u zich voelt..."
+}

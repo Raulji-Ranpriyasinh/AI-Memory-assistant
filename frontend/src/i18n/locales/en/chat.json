@@ -1,0 +1,12 @@
+{
+  "title": "AI Health Assistant",
+  "disclaimer": {
+    "heading": "Medical disclaimer",
+    "body": "Delight is an AI health companion, not a doctor. It does not provide medical diagnoses or replace professional advice. Always consult your doctor for medical decisions."
+  },
+  "inputPlaceholder": "Type your message...",
+  "send": "Send message",
+  "emptyState": "No messages yet. Ask me anything about your health!",
+  "aiTyping": "Delight is thinking...",
+  "aiError": "AI service is temporarily unavailable. Please try again later."
+}

@@ -1,0 +1,36 @@
+{
+  "save": "حفظ",
+  "cancel": "إلغاء",
+  "loading": "جارٍ التحميل...",
+  "error": "خطأ",
+  "back": "رجوع",
+  "next": "التالي",
+  "yes": "نعم",
+  "no": "لا",
+  "skip": "تخطي",
+  "continue": "متابعة",
+  "submit": "إرسال",
+  "delete": "حذف",
+  "edit": "تعديل",
+  "add": "إضافة",
+  "remove": "إزالة",
+  "search": "بحث",
+  "filter": "تصفية",
+  "close": "إغلاق",
+  "open": "فتح",
+  "logout": "تسجيل خروج",
+  "selectLanguage": "اختر اللغة",
+  "languageChanged": "تم تغيير اللغة إلى {{language}}",
+  "status": {
+    "active": "نشط",
+    "suspended": "موقوف",
+    "pending": "معلق"
+  },
+  "timeAgo": "منذ {{n}} {{unit}}",
+  "todayAt": "اليوم الساعة {{time}}",
+  "units": {
+    "hours": "ساعات",
+    "minutes": "دقائق",
+    "days": "أيام"
+  }
+}

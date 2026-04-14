@@ -1,0 +1,28 @@
+{
+  "title": "كيف تشعر اليوم؟",
+  "emotions": {
+    "happy": "سعيد",
+    "calm": "هادئ",
+    "energised": "نشيط",
+    "tired": "متعب",
+    "anxious": "قلق",
+    "sad": "حزين",
+    "irritable": "متهيّج",
+    "unwell": "مريض",
+    "other": "أخرى"
+  },
+  "stress": {
+    "label": "مستوى التوتر",
+    "low": "منخفض",
+    "moderate": "متوسط",
+    "high": "مرتفع",
+    "ariaValue": "{{n}} من أصل {{max}}"
+  },
+  "notesPlaceholder": "ملاحظات اختيارية حول شعورك...",
+  "logMood": "تسجيل المزاج",
+  "moodLogged": "تم تسجيل المزاج بنجاح",
+  "logFailed": "فشل تسجيل المزاج",
+  "selectEmotion": "اختر مشاعرك",
+  "aiInsight": "ملاحظة Delight:",
+  "describeFeelings": "صف كيف تشعر..."
+}

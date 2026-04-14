@@ -1,0 +1,30 @@
+{
+  "title": "Enregistrer un repas",
+  "meal": {
+    "breakfast": "Petit-déjeuner",
+    "lunch": "Déjeuner",
+    "dinner": "Dîner",
+    "snack": "Collation"
+  },
+  "manualEntry": {
+    "foodInput": "Ajouter un aliment (Entrée pour valider)",
+    "calories": "Calories estimées",
+    "kcal": "kcal",
+    "glycemicLoad": "Charge glycémique",
+    "gl": { "low": "Faible", "medium": "Moyen", "high": "Élevé" }
+  },
+  "photo": {
+    "uploadPrompt": "Faites glisser une photo ou appuyez pour télécharger",
+    "analysing": "Analyse de votre repas...",
+    "timeout": "Délai d'analyse dépassé. Veuillez saisir manuellement.",
+    "lowConfidence": "Certains aliments peuvent être imprécis. Vérifiez avant de sauvegarder.",
+    "unavailable": "Reconnaissance photo indisponible. Veuillez saisir manuellement."
+  },
+  "confidence": "Confiance: {{pct}}%",
+  "saveToLog": "Enregistrer dans le journal alimentaire",
+  "logMeal": "Enregistrer le repas",
+  "mealLogged": "Repas enregistré avec succès",
+  "logFailed": "Échec de l'enregistrement du repas",
+  "addFood": "Ajoutez au moins un aliment",
+  "history": { "title": "Repas récents", "empty": "Aucun repas enregistré" }
+}

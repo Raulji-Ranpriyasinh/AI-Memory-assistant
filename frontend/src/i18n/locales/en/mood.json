@@ -1,0 +1,28 @@
+{
+  "title": "How are you feeling?",
+  "emotions": {
+    "happy": "Happy",
+    "calm": "Calm",
+    "energised": "Energised",
+    "tired": "Tired",
+    "anxious": "Anxious",
+    "sad": "Sad",
+    "irritable": "Irritable",
+    "unwell": "Unwell",
+    "other": "Other"
+  },
+  "stress": {
+    "label": "Stress Level",
+    "low": "Low",
+    "moderate": "Moderate",
+    "high": "High",
+    "ariaValue": "{{n}} out of {{max}}"
+  },
+  "notesPlaceholder": "Optional notes about how you feel...",
+  "logMood": "Log Mood",
+  "moodLogged": "Mood logged successfully",
+  "logFailed": "Failed to log mood",
+  "selectEmotion": "Select an emotion",
+  "aiInsight": "Delight insight:",
+  "describeFeelings": "Describe how you feel..."
+}

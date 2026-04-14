@@ -1,0 +1,22 @@
+{
+  "unit": { "mgdl": "mg/dL", "mmoll": "mmol/L" },
+  "chart": { "yAxisLabel": "Glikoz ({{unit}})", "ariaLabel": "Glikoz okumaları grafiği, son {{period}}. Hedef aralık yeşil." },
+  "referenceLines": { "hypo": "Hipoglisemi eşiği", "target": "Hedef aralık üst sınırı", "hyper": "Hiperglisemi eşiği" },
+  "period": { "24h": "24s", "7d": "7g", "30d": "30g" },
+  "empty": "Henüz glikoz verisi yok",
+  "addReading": "İlk ölçümünüzü ekleyin",
+  "stats": { "avg": "Ort. Glikoz", "min": "Min", "max": "Maks", "tir": "Hedefe Ulaşma Süresi", "spikes": "Ani Yükselme", "hypos": "Hipolar" },
+  "tooltips": { "avg": "Seçilen dönemdeki ortalama glikoz", "min": "Dönemdeki en düşük ölçüm", "max": "Dönemdeki en yüksek ölçüm", "tir": "Glikozun hedef aralıkta olduğu sürenin yüzdesi", "spikes": "180 mg/dL üzerindeki ölçüm sayısı", "hypos": "70 mg/dL altındaki ölçüm sayısı. Sık olursa doktora danışın." },
+  "manualEntry": {
+    "placeholder": "Glikoz girin ({{unit}})",
+    "add": "Ekle",
+    "trend": "Eğilim",
+    "deviceId": "Cihaz ID (isteğe bağlı)",
+    "deviceIdPlaceholder": "örn. Libre 3",
+    "timestamp": "Zaman Damgası",
+    "trends": { "risingRapidly": "Hızlı Yükseliyor", "rising": "Yükseliyor", "stable": "Stabil", "falling": "Düşüyor", "fallingRapidly": "Hızlı Düşüyor" }
+  },
+  "range": { "hypo": "Hipo", "normal": "Normal", "high": "Yüksek" },
+  "saved": "Glikoz ölçümü kaydedildi",
+  "saveFailed": "Glikoz ölçümü kaydedilemedi"
+}

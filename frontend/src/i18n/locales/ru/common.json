@@ -1,0 +1,36 @@
+{
+  "save": "Сохранить",
+  "cancel": "Отмена",
+  "loading": "Загрузка...",
+  "error": "Ошибка",
+  "back": "Назад",
+  "next": "Далее",
+  "yes": "Да",
+  "no": "Нет",
+  "skip": "Пропустить",
+  "continue": "Продолжить",
+  "submit": "Отправить",
+  "delete": "Удалить",
+  "edit": "Изменить",
+  "add": "Добавить",
+  "remove": "Убрать",
+  "search": "Поиск",
+  "filter": "Фильтр",
+  "close": "Закрыть",
+  "open": "Открыть",
+  "logout": "Выйти",
+  "selectLanguage": "Выбрать язык",
+  "languageChanged": "Язык изменён на {{language}}",
+  "status": {
+    "active": "Активный",
+    "suspended": "Заблокированный",
+    "pending": "В ожидании"
+  },
+  "timeAgo": "{{n}} {{unit}} назад",
+  "todayAt": "Сегодня в {{time}}",
+  "units": {
+    "hours": "ч",
+    "minutes": "мин",
+    "days": "д"
+  }
+}

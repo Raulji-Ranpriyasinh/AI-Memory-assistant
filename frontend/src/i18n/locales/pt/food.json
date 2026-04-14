@@ -1,0 +1,30 @@
+{
+  "title": "Registrar refeição",
+  "meal": {
+    "breakfast": "Café da manhã",
+    "lunch": "Almoço",
+    "dinner": "Jantar",
+    "snack": "Lanche"
+  },
+  "manualEntry": {
+    "foodInput": "Adicionar alimento (Enter para adicionar)",
+    "calories": "Calorias estimadas",
+    "kcal": "kcal",
+    "glycemicLoad": "Carga glicêmica",
+    "gl": { "low": "Baixa", "medium": "Média", "high": "Alta" }
+  },
+  "photo": {
+    "uploadPrompt": "Arraste a foto aqui ou toque para enviar",
+    "analysing": "Analisando sua refeição...",
+    "timeout": "Tempo de reconhecimento esgotado. Por favor, registre manualmente.",
+    "lowConfidence": "Alguns itens podem ser imprecisos. Revise antes de salvar.",
+    "unavailable": "Reconhecimento de foto indisponível. Por favor, registre manualmente."
+  },
+  "confidence": "Confiança: {{pct}}%",
+  "saveToLog": "Salvar no diário alimentar",
+  "logMeal": "Registrar refeição",
+  "mealLogged": "Refeição registrada com sucesso",
+  "logFailed": "Falha ao registrar refeição",
+  "addFood": "Adicione pelo menos um alimento",
+  "history": { "title": "Refeições recentes", "empty": "Nenhuma refeição registrada ainda" }
+}

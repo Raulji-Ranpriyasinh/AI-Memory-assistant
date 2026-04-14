@@ -1,0 +1,30 @@
+{
+  "title": "Maaltijd vastleggen",
+  "meal": {
+    "breakfast": "Ontbijt",
+    "lunch": "Lunch",
+    "dinner": "Avondeten",
+    "snack": "Snack"
+  },
+  "manualEntry": {
+    "foodInput": "Voedselitem toevoegen (Enter om toe te voegen)",
+    "calories": "Geschatte calorieën",
+    "kcal": "kcal",
+    "glycemicLoad": "Glycemische lading",
+    "gl": { "low": "Laag", "medium": "Gemiddeld", "high": "Hoog" }
+  },
+  "photo": {
+    "uploadPrompt": "Sleep foto hiernaartoe of tik om te uploaden",
+    "analysing": "Uw maaltijd wordt geanalyseerd...",
+    "timeout": "Fotoherkenning time-out. Voer handmatig in.",
+    "lowConfidence": "Sommige items zijn mogelijk onnauwkeurig. Controleer voor opslaan.",
+    "unavailable": "Fotoherkenning niet beschikbaar. Voer handmatig in."
+  },
+  "confidence": "Betrouwbaarheid: {{pct}}%",
+  "saveToLog": "Opslaan in voedingsdagboek",
+  "logMeal": "Maaltijd vastleggen",
+  "mealLogged": "Maaltijd succesvol vastgelegd",
+  "logFailed": "Maaltijd vastleggen mislukt",
+  "addFood": "Voeg minimaal één voedselitem toe",
+  "history": { "title": "Recente maaltijden", "empty": "Nog geen maaltijden vastgelegd" }
+}

@@ -1,0 +1,36 @@
+{
+  "save": "Kaydet",
+  "cancel": "İptal",
+  "loading": "Yükleniyor...",
+  "error": "Hata",
+  "back": "Geri",
+  "next": "İleri",
+  "yes": "Evet",
+  "no": "Hayır",
+  "skip": "Atla",
+  "continue": "Devam et",
+  "submit": "Gönder",
+  "delete": "Sil",
+  "edit": "Düzenle",
+  "add": "Ekle",
+  "remove": "Kaldır",
+  "search": "Ara",
+  "filter": "Filtrele",
+  "close": "Kapat",
+  "open": "Aç",
+  "logout": "Çıkış yap",
+  "selectLanguage": "Dil seçin",
+  "languageChanged": "Dil {{language}} olarak değiştirildi",
+  "status": {
+    "active": "Aktif",
+    "suspended": "Askıya alındı",
+    "pending": "Beklemede"
+  },
+  "timeAgo": "{{n}} {{unit}} önce",
+  "todayAt": "Bugün saat {{time}}",
+  "units": {
+    "hours": "saat",
+    "minutes": "dakika",
+    "days": "gün"
+  }
+}

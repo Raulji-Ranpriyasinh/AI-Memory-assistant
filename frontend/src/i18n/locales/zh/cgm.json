@@ -1,0 +1,22 @@
+{
+  "unit": { "mgdl": "mg/dL", "mmoll": "mmol/L" },
+  "chart": { "yAxisLabel": "血糖 ({{unit}})", "ariaLabel": "血糖读数图表，最近{{period}}。目标范围用绿色标注。" },
+  "referenceLines": { "hypo": "低血糖阈值", "target": "目标范围上限", "hyper": "高血糖阈值" },
+  "period": { "24h": "24小时", "7d": "7天", "30d": "30天" },
+  "empty": "暂无血糖数据",
+  "addReading": "添加首次读数",
+  "stats": { "avg": "平均血糖", "min": "最低", "max": "最高", "tir": "目标内时间", "spikes": "峰值", "hypos": "低血糖" },
+  "tooltips": { "avg": "所选周期内的平均血糖", "min": "周期内最低读数", "max": "周期内最高读数", "tir": "血糖在目标范围内的时间百分比", "spikes": "超过180 mg/dL的读数次数", "hypos": "低于70 mg/dL的读数次数，如果频繁请咨询医生。" },
+  "manualEntry": {
+    "placeholder": "输入血糖 ({{unit}})",
+    "add": "添加",
+    "trend": "趋势",
+    "deviceId": "设备ID（可选）",
+    "deviceIdPlaceholder": "例如 Libre 3",
+    "timestamp": "时间戳",
+    "trends": { "risingRapidly": "快速上升", "rising": "上升", "stable": "稳定", "falling": "下降", "fallingRapidly": "快速下降" }
+  },
+  "range": { "hypo": "低血糖", "normal": "正常", "high": "偏高" },
+  "saved": "血糖读数保存成功",
+  "saveFailed": "保存血糖读数失败"
+}

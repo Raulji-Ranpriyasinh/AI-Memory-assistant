@@ -1,0 +1,22 @@
+{
+  "unit": { "mgdl": "mg/dL", "mmoll": "mmol/L" },
+  "chart": { "yAxisLabel": "Glucose ({{unit}})", "ariaLabel": "Glucosewaardendiagram, laatste {{period}}. Doelbereik groen gemarkeerd." },
+  "referenceLines": { "hypo": "Hypoglykemiedrempel", "target": "Bovengrens doelbereik", "hyper": "Hyperglykemiedrempel" },
+  "period": { "24h": "24u", "7d": "7d", "30d": "30d" },
+  "empty": "Nog geen glucosegegevens",
+  "addReading": "Voeg uw eerste meting toe",
+  "stats": { "avg": "Gem. glucose", "min": "Min", "max": "Max", "tir": "Tijd in bereik", "spikes": "Pieken", "hypos": "Hypo's" },
+  "tooltips": { "avg": "Gemiddelde glucose in de periode", "min": "Laagste meting", "max": "Hoogste meting", "tir": "% tijd in doelbereik", "spikes": "Aantal metingen > 180 mg/dL", "hypos": "Aantal metingen < 70 mg/dL. Raadpleeg uw arts indien frequent." },
+  "manualEntry": {
+    "placeholder": "Glucose invoeren ({{unit}})",
+    "add": "Toevoegen",
+    "trend": "Trend",
+    "deviceId": "Apparaat-ID (optioneel)",
+    "deviceIdPlaceholder": "bijv. Libre 3",
+    "timestamp": "Tijdstempel",
+    "trends": { "risingRapidly": "Snel stijgend", "rising": "Stijgend", "stable": "Stabiel", "falling": "Dalend", "fallingRapidly": "Snel dalend" }
+  },
+  "range": { "hypo": "Hypo", "normal": "Normaal", "high": "Hoog" },
+  "saved": "Glucosemeting opgeslagen",
+  "saveFailed": "Opslaan van glucosemeting mislukt"
+}

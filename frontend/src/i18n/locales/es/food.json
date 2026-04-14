@@ -1,0 +1,30 @@
+{
+  "title": "Registrar comida",
+  "meal": {
+    "breakfast": "Desayuno",
+    "lunch": "Almuerzo",
+    "dinner": "Cena",
+    "snack": "Merienda"
+  },
+  "manualEntry": {
+    "foodInput": "Añadir alimento (Enter para agregar)",
+    "calories": "Calorías estimadas",
+    "kcal": "kcal",
+    "glycemicLoad": "Carga glucémica",
+    "gl": { "low": "Baja", "medium": "Media", "high": "Alta" }
+  },
+  "photo": {
+    "uploadPrompt": "Arrastra tu foto o toca para subir",
+    "analysing": "Analizando tu comida...",
+    "timeout": "Tiempo de reconocimiento agotado. Por favor, regístralo manualmente.",
+    "lowConfidence": "Algunos elementos pueden ser inexactos. Revisa antes de guardar.",
+    "unavailable": "Reconocimiento de fotos no disponible. Por favor, regístralo manualmente."
+  },
+  "confidence": "Confianza: {{pct}}%",
+  "saveToLog": "Guardar en el diario alimentario",
+  "logMeal": "Registrar comida",
+  "mealLogged": "Comida registrada con éxito",
+  "logFailed": "Error al registrar la comida",
+  "addFood": "Añade al menos un alimento",
+  "history": { "title": "Comidas recientes", "empty": "Aún no hay comidas registradas" }
+}

@@ -1,0 +1,36 @@
+{
+  "save": "Opslaan",
+  "cancel": "Annuleren",
+  "loading": "Laden...",
+  "error": "Fout",
+  "back": "Terug",
+  "next": "Volgende",
+  "yes": "Ja",
+  "no": "Nee",
+  "skip": "Overslaan",
+  "continue": "Doorgaan",
+  "submit": "Verzenden",
+  "delete": "Verwijderen",
+  "edit": "Bewerken",
+  "add": "Toevoegen",
+  "remove": "Verwijderen",
+  "search": "Zoeken",
+  "filter": "Filteren",
+  "close": "Sluiten",
+  "open": "Openen",
+  "logout": "Uitloggen",
+  "selectLanguage": "Taal selecteren",
+  "languageChanged": "Taal gewijzigd naar {{language}}",
+  "status": {
+    "active": "Actief",
+    "suspended": "Opgeschort",
+    "pending": "In behandeling"
+  },
+  "timeAgo": "{{n}} {{unit}} geleden",
+  "todayAt": "Vandaag om {{time}}",
+  "units": {
+    "hours": "uur",
+    "minutes": "minuten",
+    "days": "dagen"
+  }
+}

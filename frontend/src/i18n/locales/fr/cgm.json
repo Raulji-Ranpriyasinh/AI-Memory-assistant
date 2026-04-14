@@ -1,0 +1,22 @@
+{
+  "unit": { "mgdl": "mg/dL", "mmoll": "mmol/L" },
+  "chart": { "yAxisLabel": "Glucose ({{unit}})", "ariaLabel": "Graphique des glycémies, dernière {{period}}. Plage cible en vert." },
+  "referenceLines": { "hypo": "Seuil hypoglycémie", "target": "Limite supérieure plage cible", "hyper": "Seuil hyperglycémie" },
+  "period": { "24h": "24h", "7d": "7j", "30d": "30j" },
+  "empty": "Pas encore de données glycémiques",
+  "addReading": "Ajoutez votre première mesure",
+  "stats": { "avg": "Glycémie moy.", "min": "Min", "max": "Max", "tir": "Temps dans la cible", "spikes": "Pics", "hypos": "Hypos" },
+  "tooltips": { "avg": "Glycémie moyenne sur la période", "min": "Mesure la plus basse", "max": "Mesure la plus haute", "tir": "Pourcentage de temps dans la cible", "spikes": "Nombre de mesures > 180 mg/dL", "hypos": "Nombre de mesures < 70 mg/dL. Consultez votre médecin si fréquent." },
+  "manualEntry": {
+    "placeholder": "Entrez la glycémie ({{unit}})",
+    "add": "Ajouter",
+    "trend": "Tendance",
+    "deviceId": "ID appareil (optionnel)",
+    "deviceIdPlaceholder": "ex. Libre 3",
+    "timestamp": "Horodatage",
+    "trends": { "risingRapidly": "Montée rapide", "rising": "En hausse", "stable": "Stable", "falling": "En baisse", "fallingRapidly": "Chute rapide" }
+  },
+  "range": { "hypo": "Hypo", "normal": "Normal", "high": "Élevé" },
+  "saved": "Mesure de glycémie enregistrée",
+  "saveFailed": "Échec de l'enregistrement de la mesure"
+}

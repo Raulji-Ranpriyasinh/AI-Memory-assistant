@@ -1,0 +1,22 @@
+{
+  "unit": { "mgdl": "mg/dL", "mmoll": "mmol/L" },
+  "chart": { "yAxisLabel": "Glukose ({{unit}})", "ariaLabel": "Glukosewerte-Diagramm, letzte {{period}}. Zielbereich grün markiert." },
+  "referenceLines": { "hypo": "Hypoglykämie-Schwelle", "target": "Obere Grenze des Zielbereichs", "hyper": "Hyperglykämie-Schwelle" },
+  "period": { "24h": "24h", "7d": "7T", "30d": "30T" },
+  "empty": "Noch keine Glukosedaten",
+  "addReading": "Erste Messung hinzufügen",
+  "stats": { "avg": "Ø Glukose", "min": "Min", "max": "Max", "tir": "Zeit im Zielbereich", "spikes": "Spitzen", "hypos": "Hypos" },
+  "tooltips": { "avg": "Durchschnittlicher Glukosewert im Zeitraum", "min": "Niedrigster Wert im Zeitraum", "max": "Höchster Wert im Zeitraum", "tir": "Prozentanteil der Zeit im Zielbereich", "spikes": "Anzahl der Messwerte > 180 mg/dL", "hypos": "Anzahl der Messwerte < 70 mg/dL. Bei häufigem Auftreten Arzt konsultieren." },
+  "manualEntry": {
+    "placeholder": "Glukosewert eingeben ({{unit}})",
+    "add": "Hinzufügen",
+    "trend": "Trend",
+    "deviceId": "Geräte-ID (optional)",
+    "deviceIdPlaceholder": "z.B. Libre 3",
+    "timestamp": "Zeitstempel",
+    "trends": { "risingRapidly": "Stark steigend", "rising": "Steigend", "stable": "Stabil", "falling": "Fallend", "fallingRapidly": "Stark fallend" }
+  },
+  "range": { "hypo": "Hypo", "normal": "Normal", "high": "Hoch" },
+  "saved": "Glukosemessung gespeichert",
+  "saveFailed": "Speichern des Glukosewerts fehlgeschlagen"
+}

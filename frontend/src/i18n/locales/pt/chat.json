@@ -1,0 +1,12 @@
+{
+  "title": "Assistente de saúde IA",
+  "disclaimer": {
+    "heading": "Aviso médico",
+    "body": "Delight é um companheiro de saúde com IA, não um médico. Não fornece diagnósticos médicos nem substitui aconselhamento profissional. Consulte sempre um médico para decisões médicas."
+  },
+  "inputPlaceholder": "Digite sua mensagem...",
+  "send": "Enviar mensagem",
+  "emptyState": "Nenhuma mensagem ainda. Pergunte-me qualquer coisa sobre sua saúde!",
+  "aiTyping": "Delight está pensando...",
+  "aiError": "O serviço de IA está temporariamente indisponível. Tente novamente mais tarde."
+}

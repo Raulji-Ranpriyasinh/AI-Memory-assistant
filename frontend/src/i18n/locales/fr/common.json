@@ -1,0 +1,36 @@
+{
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "loading": "Chargement...",
+  "error": "Erreur",
+  "back": "Retour",
+  "next": "Suivant",
+  "yes": "Oui",
+  "no": "Non",
+  "skip": "Passer",
+  "continue": "Continuer",
+  "submit": "Soumettre",
+  "delete": "Supprimer",
+  "edit": "Modifier",
+  "add": "Ajouter",
+  "remove": "Retirer",
+  "search": "Rechercher",
+  "filter": "Filtrer",
+  "close": "Fermer",
+  "open": "Ouvrir",
+  "logout": "Déconnexion",
+  "selectLanguage": "Choisir la langue",
+  "languageChanged": "Langue changée en {{language}}",
+  "status": {
+    "active": "Actif",
+    "suspended": "Suspendu",
+    "pending": "En attente"
+  },
+  "timeAgo": "il y a {{n}} {{unit}}",
+  "todayAt": "Aujourd'hui à {{time}}",
+  "units": {
+    "hours": "heures",
+    "minutes": "minutes",
+    "days": "jours"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "title": "记录饮食",
+  "meal": {
+    "breakfast": "早餐",
+    "lunch": "午餐",
+    "dinner": "晚餐",
+    "snack": "零食"
+  },
+  "manualEntry": {
+    "foodInput": "添加食品（按Enter确认）",
+    "calories": "估算热量",
+    "kcal": "千卡",
+    "glycemicLoad": "血糖负荷",
+    "gl": { "low": "低", "medium": "中", "high": "高" }
+  },
+  "photo": {
+    "uploadPrompt": "拖放照片或点击上传",
+    "analysing": "正在分析您的食物...",
+    "timeout": "照片识别超时，请手动输入。",
+    "lowConfidence": "部分项目可能不准确，请在保存前确认。",
+    "unavailable": "照片识别暂不可用，请手动输入。"
+  },
+  "confidence": "置信度: {{pct}}%",
+  "saveToLog": "保存到饮食记录",
+  "logMeal": "记录饮食",
+  "mealLogged": "饮食记录成功",
+  "logFailed": "饮食记录失败",
+  "addFood": "请至少添加一种食品",
+  "history": { "title": "最近饮食", "empty": "尚无饮食记录" }
+}
