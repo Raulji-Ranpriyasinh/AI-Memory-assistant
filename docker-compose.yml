@@ -26,7 +26,7 @@ services:
       - mongodata:/data/db
     networks:
       - delight-network
-
+ 
   redis:
     image: redis:7-alpine
     ports:
