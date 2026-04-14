@@ -1,5 +1,5 @@
 ### User 1: Tell the bot my name
-POST http://localhost:8000/api/chat
+POST http://localhost:8000/api/v1/chat
 Content-Type: application/json
 
 {

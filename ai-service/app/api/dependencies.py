@@ -28,10 +28,22 @@ def get_chatbot(user_id: str) -> "MultiLayerChatbot":
     Creates a new instance if not already cached.
     """
     # Lazy import to avoid heavy dependency load at module import time
+    import logging
     from app.chatbot import MultiLayerChatbot
 
+    logger = logging.getLogger(__name__)
+
     if user_id not in _chatbot_cache:
-        _chatbot_cache[user_id] = MultiLayerChatbot(user_id=user_id)
+        try:
+            logger.info(f"Creating new chatbot instance for user {user_id}")
+            _chatbot_cache[user_id] = MultiLayerChatbot(user_id=user_id)
+            logger.info(f"Chatbot created successfully for user {user_id}")
+        except Exception as e:
+            logger.error(f"Failed to create chatbot for user {user_id}: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to initialize chatbot: {str(e)}"
+            )
     return _chatbot_cache[user_id]
 
 

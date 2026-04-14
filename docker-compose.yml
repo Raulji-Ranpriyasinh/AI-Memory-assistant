@@ -38,6 +38,14 @@ services:
     build: ./ai-service
     ports:
       - "8000:8000"
+    env_file: .env
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - JWT_SECRET=${JWT_SECRET:-default-secret}
+      - DB_URI=postgresql://postgres:postgres@postgres:5432/postgres
+    depends_on:
+      - postgres
     networks:
       - delight-network
 
@@ -46,9 +54,15 @@ services:
     ports:
       - "4000:4000"
     env_file: .env
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-default-secret}
+      - MONGODB_URI=mongodb://delight:delight123@mongodb:27017/delight?authSource=admin
+      - AI_SERVICE_URL=http://ai-service:8000
+      - CORS_ORIGINS=http://localhost:3000
     depends_on:
       - mongodb
       - redis
+      - ai-service
     networks:
       - delight-network
 

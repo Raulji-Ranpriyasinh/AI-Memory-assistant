@@ -58,7 +58,15 @@ class FoodRecognizeResponse(BaseModel):
     items: List[str]
     estimated_calories: Optional[int] = None
     glycemic_load: Optional[str] = None
-    portion_sizes: Optional[List[dict]] = None
+    portion_description: Optional[str] = None
+    portion_weight_grams: Optional[int] = None
+    glycemic_index: Optional[dict] = None
+    nutrients: Optional[dict] = None
+    micronutrients: Optional[dict] = None
+    health_score: Optional[int] = None
+    health_notes: Optional[str] = None
+    suitable_for: Optional[List[str]] = None
+    caution_for: Optional[List[str]] = None
     confidence: Optional[float] = None
 
 

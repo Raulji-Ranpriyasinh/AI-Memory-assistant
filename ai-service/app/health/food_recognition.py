@@ -23,6 +23,16 @@ class FoodRecognitionResult(BaseModel):
     glycemic_load: str  # 'low' | 'medium' | 'high'
     portion_sizes: List[str]
     confidence: float  # 0-1
+    # Extended fields from Gemini response
+    portion_description: Optional[str] = None
+    portion_weight_grams: Optional[int] = None
+    glycemic_index: Optional[dict] = None
+    nutrients: Optional[dict] = None
+    micronutrients: Optional[dict] = None
+    health_score: Optional[int] = None
+    health_notes: Optional[str] = None
+    suitable_for: Optional[List[str]] = None
+    caution_for: Optional[List[str]] = None
 
 
 # ── Abstract service ────────────────────────────────────────────────────────
@@ -57,7 +67,7 @@ class GeminiVisionRecognizer(FoodRecognitionService):
     """
 
     FOOD_ANALYSIS_PROMPT = """
-You are a nutrition expert and dietitian. Analyze the food in this image and provide nutritional information.
+You are a nutrition expert and dietitian. Analyze the food in this image and provide a detailed nutritional breakdown.
 
 Return your response as a valid JSON object with the following structure:
 {
@@ -84,6 +94,14 @@ Return your response as a valid JSON object with the following structure:
     "sugar_g": 0,
     "sodium_mg": 0
   },
+  "micronutrients": {
+    "vitamins": ["list of notable vitamins present"],
+    "minerals": ["list of notable minerals present"]
+  },
+  "health_score": 0,
+  "health_notes": "brief overall health assessment",
+  "suitable_for": ["e.g., diabetics, weight loss, athletes"],
+  "caution_for": ["e.g., high blood pressure, diabetes"],
   "confidence": 0.85
 }
 
@@ -133,6 +151,16 @@ Return ONLY the JSON object, no extra text.
             glycemic_load=glycemic_load,
             portion_sizes=[data.get("estimated_portion", {}).get("description", "")],
             confidence=float(data.get("confidence", 0.5)),
+            # Extended fields
+            portion_description=data.get("estimated_portion", {}).get("description"),
+            portion_weight_grams=data.get("estimated_portion", {}).get("weight_grams"),
+            glycemic_index=data.get("glycemic_index"),
+            nutrients=data.get("nutrients_per_serving"),
+            micronutrients=data.get("micronutrients"),
+            health_score=data.get("health_score"),
+            health_notes=data.get("health_notes"),
+            suitable_for=data.get("suitable_for", []),
+            caution_for=data.get("caution_for", []),
         )
 
 

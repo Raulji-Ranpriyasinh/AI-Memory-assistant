@@ -1,0 +1,29 @@
+### Step 1: Login to get JWT token
+### Run this first, then copy the access_token and replace {{auth_token}} below
+POST http://localhost:8000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "user_id": "test_user_1",
+  "role": "patient"
+}
+
+### Step 2: Recognize Food from Image (using file path)
+### Replace YOUR_TOKEN_HERE with the token from Step 1
+POST http://localhost:8000/api/v1/food/recognize
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdF91c2VyXzEiLCJyb2xlIjoicGF0aWVudCIsImV4cCI6MTc3Njc2Nzc3Nn0.3dQItJ2PjHmvRb7aNU8R9mmDz5dkB6h6Xetz3vQ6W4E
+Content-Type: application/x-www-form-urlencoded
+
+image_path=C:\Users\Reyna\OneDrive - Reyna Solutions LLP\Pictures\food.png
+
+### Step 3: Recognize Food from Image (using file upload)
+POST http://localhost:8000/api/v1/food/recognize
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="food.png"
+Content-Type: image/png
+
+< C:/Users/Reyna/Pictures/food.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

@@ -10,19 +10,8 @@ from __future__ import annotations
 
 import sys
 
-from fastapi import FastAPI
-from endpoints import router as endpoints_router
-
-# ── FastAPI app ────────────────────────────────────────────────────────────────
-
-app = FastAPI(
-    title="Multi-Layer Memory Chatbot API",
-    description="REST API exposing all CLI chatbot functionality",
-    version="1.0.0",
-)
-
-# Register all endpoints
-app.include_router(endpoints_router)
+# Import the fully configured app from app.api.main
+from app.api.main import app
 
 
 # ── CLI fallback ───────────────────────────────────────────────────────────────

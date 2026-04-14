@@ -8,19 +8,69 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { HttpService } from '@nestjs/axios';
 import * as bcrypt from 'bcrypt';
 import { User, UserDocument, UserRole, UserStatus } from './schemas/user.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
+import { firstValueFrom } from 'rxjs';
+import { catchError, timeout } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
+  private aiServiceUrl: string;
+
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
     private configService: ConfigService,
-  ) {}
+    private httpService: HttpService,
+  ) {
+    this.aiServiceUrl = this.configService.get<string>('AI_SERVICE_URL') || 'http://localhost:8000';
+  }
+
+  /**
+   * Sync user to AI Service after registration
+   * This ensures the AI service knows about the user
+   */
+  private async syncUserToAiService(userId: string, email: string, role: string): Promise<void> {
+    try {
+      // Create a system token for internal communication (uses same JWT_SECRET)
+      const systemToken = this.jwtService.sign({
+        sub: userId,
+        email,
+        role,
+        type: 'system',
+      });
+
+      await firstValueFrom(
+        this.httpService
+          .post(
+            `${this.aiServiceUrl}/api/v1/users/sync`,
+            {
+              user_id: userId,
+              email,
+              role,
+            },
+            {
+              headers: { Authorization: `Bearer ${systemToken}` },
+            },
+          )
+          .pipe(
+            timeout(5000),
+            catchError((err) => {
+              // Log but don't fail registration if AI service is down
+              console.warn('[AuthService] Failed to sync user to AI service:', err.message);
+              return [];
+            }),
+          ),
+      );
+    } catch (error) {
+      // Silently fail - user can still use the app, AI service will create user on first chat
+      console.warn('[AuthService] AI service sync failed:', error);
+    }
+  }
 
   async register(dto: RegisterDto): Promise<TokenResponseDto> {
     const existingUser = await this.userModel.findOne({ email: dto.email });
@@ -44,6 +94,9 @@ export class AuthService {
 
     const payload = { sub: user._id.toString(), email: user.email, role: user.role };
     const accessToken = this.jwtService.sign(payload);
+
+    // Sync user to AI Service (non-blocking, fails silently)
+    this.syncUserToAiService(user._id.toString(), user.email, user.role).catch(() => {});
 
     return {
       accessToken,

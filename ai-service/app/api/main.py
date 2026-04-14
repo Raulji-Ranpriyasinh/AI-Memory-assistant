@@ -74,8 +74,12 @@ from app.api.routes.food import router as food_router
 from app.api.routes.activity import router as activity_router
 from app.api.routes.nudges import router as nudges_router
 from app.api.routes.programs import router as programs_router
+from app.api.routes.auth import router as auth_router
+from app.api.routes.users import router as users_router
 
+app.include_router(auth_router, prefix="/api/v1", tags=["auth"])
 app.include_router(chat_router, prefix="/api/v1", tags=["chat"])
+app.include_router(users_router, prefix="/api/v1", tags=["users"])
 app.include_router(memories_router, prefix="/api/v1", tags=["memories"])
 app.include_router(system_router, prefix="/api/v1", tags=["system"])
 app.include_router(cgm_router, prefix="/api/v1", tags=["cgm"])

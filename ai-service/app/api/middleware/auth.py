@@ -26,8 +26,8 @@ class JWTMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         path = request.url.path
 
-        # Skip auth for health check and non-api routes
-        if path == "/api/v1/health" or not path.startswith("/api/v1"):
+        # Skip auth for health check, auth/login, user sync, and non-api routes
+        if path in ["/api/v1/health", "/api/v1/auth/login", "/api/v1/users/sync"] or not path.startswith("/api/v1"):
             return await call_next(request)
 
         # Extract Authorization header

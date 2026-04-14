@@ -45,9 +45,13 @@ def decode_jwt(token: str) -> dict:
     """
     Decode and validate a JWT token.
 
+    Supports two JWT formats:
+    1. Backend format: {sub: user_id, email, role, exp}
+    2. Legacy format: {user_id, role, exp}
+
     Uses JWT_SECRET and JWT_ALGORITHM from settings.
     Raises AuthError if the token is expired or has an invalid signature.
-    Returns the decoded claims dict (user_id, role, exp, etc.).
+    Returns the decoded claims dict with normalized fields.
     """
     try:
         payload = jwt.decode(
@@ -55,6 +59,12 @@ def decode_jwt(token: str) -> dict:
             settings.JWT_SECRET,
             algorithms=[settings.JWT_ALGORITHM],
         )
+        
+        # Normalize JWT claims to always have user_id and role
+        # Backend uses 'sub' for user_id, legacy uses 'user_id'
+        if "user_id" not in payload and "sub" in payload:
+            payload["user_id"] = payload["sub"]
+        
         return payload
     except JWTError as exc:
         raise AuthError(detail=f"Invalid token: {exc}")
