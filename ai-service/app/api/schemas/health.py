@@ -12,10 +12,11 @@ from pydantic import BaseModel, Field
 # ── CGM schemas ────────────────────────────────────────────────────────────────
 
 class CGMReading(BaseModel):
-    glucose_mg_dl: float
+    model_config = {"populate_by_name": True, "extra": "ignore"}
+    glucose_mg_dl: float = Field(..., validation_alias="glucoseMgDl")
     timestamp: str
     trend: Optional[str] = None
-    device_id: Optional[str] = None
+    device_id: Optional[str] = Field(None, validation_alias="deviceId")
 
 
 class CGMBatchRequest(BaseModel):
@@ -34,20 +35,23 @@ class CGMSummaryResponse(BaseModel):
 # ── Mood schemas ───────────────────────────────────────────────────────────────
 
 class MoodEntryRequest(BaseModel):
+    model_config = {"populate_by_name": True, "extra": "ignore"}
     emotion: str
-    stress_level: int = Field(..., ge=1, le=10)
-    sleep_hours: Optional[float] = None
+    stress_level: int = Field(..., ge=1, le=10, validation_alias="stressLevel")
+    sleep_hours: Optional[float] = Field(None, validation_alias="sleepHours")
     notes: Optional[str] = None
 
 
 # ── Food schemas ───────────────────────────────────────────────────────────────
 
 class FoodLogRequest(BaseModel):
-    meal_type: str
+    model_config = {"populate_by_name": True, "extra": "ignore"}
+    meal_type: str = Field(..., validation_alias="mealType")
     items: List[str]
-    photo_url: Optional[str] = None
-    estimated_calories: Optional[int] = None
-    glycemic_load: Optional[str] = None
+    photo_url: Optional[str] = Field(None, validation_alias="photoUrl")
+    estimated_calories: Optional[int] = Field(None, validation_alias="estimatedCalories")
+    glycemic_load: Optional[str] = Field(None, validation_alias="glycemicLoad")
+    image_base64: Optional[str] = Field(None, validation_alias="imageBase64")
 
 
 class FoodRecognizeRequest(BaseModel):

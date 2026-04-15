@@ -24,6 +24,7 @@ from langgraph.store.base import BaseStore
 from app.config.settings import (
     CHAT_MODEL,
     CHAT_TEMPERATURE,
+    GOOGLE_API_KEY,
     LTM_SALIENCE_THRESHOLD,
     LTM_TOP_K,
     MEMORY_MODEL,
@@ -60,11 +61,15 @@ class MemoryController:
         # ── Tiered LLMs ───────────────────────────────────────────────────
         # Tier 1: cheap + fast → high-volume extraction / scoring
         self.memory_llm = ChatGoogleGenerativeAI(
-            model=MEMORY_MODEL, temperature=MEMORY_TEMPERATURE
+            model=MEMORY_MODEL,
+            temperature=MEMORY_TEMPERATURE,
+            api_key=GOOGLE_API_KEY or None,
         )
         # Tier 2: better model → user-facing chat responses
         self.chat_llm = ChatGoogleGenerativeAI(
-            model=CHAT_MODEL, temperature=CHAT_TEMPERATURE
+            model=CHAT_MODEL,
+            temperature=CHAT_TEMPERATURE,
+            google_api_key=GOOGLE_API_KEY or None,
         )
 
         # Structured extractors (all use cheap model)

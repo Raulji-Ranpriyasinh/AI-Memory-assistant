@@ -40,7 +40,7 @@ export class AiProxyService {
       const response = await firstValueFrom(
         this.httpService
           .post(
-            `${this.aiServiceUrl}/api/v1/cgm`,
+            `${this.aiServiceUrl}/api/v1/cgm/readings`,
             { user_id: userId, readings },
             { headers: { Authorization: `Bearer ${token}` } },
           )

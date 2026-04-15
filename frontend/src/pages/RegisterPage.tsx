@@ -36,7 +36,8 @@ export default function RegisterPage() {
       const { data } = await api.post('/auth/register', {
         email,
         password,
-        profile: { firstName, lastName },
+        firstName,
+        lastName,
       });
       setAuth(data.accessToken, data.user);
       toast.success(t('registered'));

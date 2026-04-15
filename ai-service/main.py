@@ -21,5 +21,8 @@ if "--cli" in sys.argv:
 
     cli_main()
 elif __name__ == "__main__":
+    import os
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    # Only enable reload in local development, not in Docker
+    reload_mode = os.getenv("RELOAD", "false").lower() == "true"
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=reload_mode)

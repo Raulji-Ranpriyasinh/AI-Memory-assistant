@@ -91,6 +91,7 @@ NUDGE_CHECK_INTERVAL_MINUTES: int = 30
 MEAL_REMINDER_HOURS: int = 5
 
 # ── External API keys ──────────────────────────────────────────────────────────
+GOOGLE_API_KEY: str = os.getenv('GOOGLE_API_KEY', '')
 FIREBASE_CREDENTIALS_PATH: str = os.getenv('FIREBASE_CREDENTIALS_PATH', '')
 NUTRITIONIX_APP_ID: str = os.getenv('NUTRITIONIX_APP_ID', '')
 NUTRITIONIX_API_KEY: str = os.getenv('NUTRITIONIX_API_KEY', '')

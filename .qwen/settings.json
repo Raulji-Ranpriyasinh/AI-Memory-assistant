@@ -26,7 +26,8 @@
       "Bash(rmdir *)",
       "Bash(select-string *)",
       "Bash(select-object *)",
-      "Bash(del *)"
+      "Bash(del *)",
+      "Bash(tasklist *)"
     ]
   },
   "$version": 3
